@@ -8,6 +8,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1506319844648133695, guid: b755001173cdf444ea62c203c6b67e18,
+        type: 3}
+      propertyPath: m_Material.m_CollisionResponse.m_Value
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2391579585950865736, guid: b755001173cdf444ea62c203c6b67e18,
         type: 3}
       propertyPath: m_Name
@@ -76,6 +81,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1995523527903999395}
+    - targetCorrespondingSourceObject: {fileID: 2391579585950865736, guid: b755001173cdf444ea62c203c6b67e18,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7280314008469141371}
   m_SourcePrefab: {fileID: 100100000, guid: b755001173cdf444ea62c203c6b67e18, type: 3}
 --- !u!1 &5445072998384298912 stripped
 GameObject:
@@ -96,3 +105,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _initialSpeedToReach: 60
+--- !u!114 &7280314008469141371
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5445072998384298912}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06afa957392360544bca7c2f669d8711, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _minForceToDamage: 500
+  _damageToDealForMinForce: 10
