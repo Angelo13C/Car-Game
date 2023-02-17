@@ -877,6 +877,7 @@ GameObject:
   - component: {fileID: 754557456904400459}
   - component: {fileID: 3500510116151046609}
   - component: {fileID: 8820641965308908544}
+  - component: {fileID: -8036978669275149172}
   m_Layer: 0
   m_Name: Car
   m_TagString: Untagged
@@ -1212,6 +1213,19 @@ MonoBehaviour:
     GasForce: 80000
   - MinSpeed: 125
     GasForce: 100000
+--- !u!114 &-8036978669275149172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2391579585950865736}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b327aedba9edc6b41b89d6c2585616a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _maxHealth: 200
 --- !u!1 &3448574166136624474
 GameObject:
   m_ObjectHideFlags: 0
