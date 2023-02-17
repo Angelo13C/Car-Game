@@ -1,4 +1,3 @@
-using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Physics;
@@ -11,19 +10,6 @@ public struct Suspensions : IComponentData
     public float Height;
     public float Force;
     public byte SuspensionsGroundedCount;
-/*
-    public int SuspensionsCount => SuspensionsPositions.Length;
-
-    public int GetSuspensionsGroundedCount()
-    {
-        var groundedCount = 0;
-        foreach(var suspensionCurrentHeight in SuspensionsCurrentHeight)
-        {
-            if(suspensionCurrentHeight <= Height)
-                groundedCount++;
-        }
-        return groundedCount;
-    }*/
 }
 
 [InternalBufferCapacity(7)]
