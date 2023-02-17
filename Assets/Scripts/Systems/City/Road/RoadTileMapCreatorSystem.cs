@@ -45,7 +45,7 @@ public partial struct RoadTileMapCreatorSystem : ISystem
                             entityCommandBuffer.SetComponent(roadEntity, new LocalTransform {
                                 Position = new float3(roadTilePosition.x, 0.01f, roadTilePosition.y),
                                 Rotation = quaternion.RotateX(math.radians(90)),
-                                Scale = 5
+                                Scale = 8
                             });
                         }
                     }

@@ -1015,7 +1015,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e8887e3700148d41a75383dafac2158, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cellSize: {x: 5, y: 5}
+  _cellSize: {x: 8, y: 8}
   _gridSize: {x: 30, y: 30}
   _roadPrefab: {fileID: 1345024000223895433, guid: 645b6712dc64d774b8292a81e6f4a890,
     type: 3}
