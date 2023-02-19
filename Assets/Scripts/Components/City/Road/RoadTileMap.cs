@@ -30,6 +30,14 @@ public struct RoadTileMap
     {
         return new float2(gridPosition.x * CellSize.x + CellSize.x / 2, gridPosition.y * CellSize.y + CellSize.y / 2);
     }
+    public int2 IndexToGridPosition(int index)
+    {
+        return new int2(index % GridSize.x, index / GridSize.x);
+    }
+    public float2 IndexToPosition(int index)
+    {
+        return GridPositionToPosition(IndexToGridPosition(index));
+    }
 }
 
 public struct RoadTileMapReference : IComponentData
