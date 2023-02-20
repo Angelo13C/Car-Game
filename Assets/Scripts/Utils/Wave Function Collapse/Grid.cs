@@ -2,21 +2,26 @@ using Unity.Mathematics;
 
 public struct Grid
 {
-    public int2 GridSize;
-    public int Area => GridSize.x * GridSize.y;
+    public int2 Size;
+    public int Area => Size.x * Size.y;
+
+    public Grid(int width, int height)
+    {
+        Size = new int2(width, height);
+    }
     
     public int GridPositionToIndex(int2 gridPosition)
     {
-        return gridPosition.x + gridPosition.y * GridSize.x;
+        return gridPosition.x + gridPosition.y * Size.x;
     }
     public int2 IndexToGridPosition(int index)
     {
-        return new int2(index % GridSize.x, index / GridSize.x);
+        return new int2(index % Size.x, index / Size.x);
     }
 
     public bool IsGridPositionValid(int2 gridPosition)
     {
-        return gridPosition.x >= 0 && gridPosition.x < GridSize.x && gridPosition.y >= 0 && gridPosition.y < GridSize.y;
+        return gridPosition.x >= 0 && gridPosition.x < Size.x && gridPosition.y >= 0 && gridPosition.y < Size.y;
     }
     public bool IsIndexValid(int index)
     {

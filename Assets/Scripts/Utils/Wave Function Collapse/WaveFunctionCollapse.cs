@@ -134,8 +134,8 @@ public struct WaveFunctionCollapse
 
             ConstrainNeighbour(currentCoords, Direction.Right, 1, cells, possiblePatterns, ref propagationStack);
             ConstrainNeighbour(currentCoords, Direction.Left, -1, cells, possiblePatterns, ref propagationStack);
-            ConstrainNeighbour(currentCoords, Direction.Down, _grid.GridSize.x, cells, possiblePatterns, ref propagationStack);
-            ConstrainNeighbour(currentCoords, Direction.Up, -_grid.GridSize.x, cells, possiblePatterns, ref propagationStack);
+            ConstrainNeighbour(currentCoords, Direction.Down, _grid.Size.x, cells, possiblePatterns, ref propagationStack);
+            ConstrainNeighbour(currentCoords, Direction.Up, -_grid.Size.x, cells, possiblePatterns, ref propagationStack);
         }
     }
 

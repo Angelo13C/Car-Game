@@ -33,16 +33,16 @@ public readonly struct PatternSet : IDisposable
     }
 }
 
-public readonly struct Pattern
+public struct Pattern
 {
-    public readonly PatternId ID;
-    public readonly uint Weight;
+    public PatternId ID;
+    public uint Weight;
     
     // I store in a cell the superposition of the valid patterns for each side
-    public readonly Cell UpValidNeighbours;
-    public readonly Cell RightValidNeighbours;
-    public readonly Cell DownValidNeighbours;
-    public readonly Cell LeftValidNeighbours;
+    public Cell UpValidNeighbours;
+    public Cell RightValidNeighbours;
+    public Cell DownValidNeighbours;
+    public Cell LeftValidNeighbours;
 
     public Cell GetValidNeighboursInDirection(Direction direction)
     {
@@ -79,7 +79,14 @@ public static class DirectionExtensions
     }
 }
 
-public readonly struct PatternId
+public readonly struct PatternId : IEquatable<PatternId>
 {
     public readonly uint Value;
+
+    public PatternId(uint value)
+    {
+        Value = value;
+    }
+
+    public bool Equals(PatternId other) => Value == other.Value;
 }

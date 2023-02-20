@@ -9,6 +9,7 @@ public struct Cell : IEquatable<Cell>
     public static readonly Cell EMPTY = new Cell { SuperPosition = 0 };
 
     public Cell Overlap(Cell other) => new Cell { SuperPosition = this.SuperPosition & other.SuperPosition };
+    public Cell Union(Cell other) => new Cell { SuperPosition = this.SuperPosition | other.SuperPosition };
 
     public byte GetEntropy()
     {
