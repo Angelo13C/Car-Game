@@ -29,12 +29,29 @@ public struct ImagePatternSetCreator
         _image = image;
     }
 
+    public struct ColorRGB : IEquatable<ColorRGB>
+    {
+        public byte R;
+        public byte G;
+        public byte B;
+        public ColorRGB(byte r, byte g, byte b)
+        {
+            R = r;
+            G = g;
+            B = b;
+        }
+
+        public static implicit operator Color32(ColorRGB color) => new Color32(color.R, color.G, color.B, byte.MaxValue);
+        public bool Equals(ColorRGB other) => R == other.R && G == other.G && B == other.B;
+    }
+
     public PatternGrid GeneratePatternGrid(Allocator allocator)
     {
         var grid = new Grid(_image.width, _image.height);
         var patternGridElements = new NativeArray<int>(grid.Area, allocator);
         var patternIdByColor = new NativeList<PatternIdAndColor>(8, Allocator.Temp);
-        var pixels = _image.GetPixelData<Color32>(0);
+        // For textures with alpha channel I need to use Color32 instead!!
+        var pixels = _image.GetPixelData<ColorRGB>(0);
 
         for(var i = 0; i < patternGridElements.Length; i++)
         {
@@ -90,12 +107,12 @@ public struct ImagePatternSetCreator
         return new PatternSet(patterns);
     }
 
-    public struct PatternIdAndColor : IEquatable<Color32>, IEquatable<PatternId>
+    public struct PatternIdAndColor : IEquatable<ColorRGB>, IEquatable<PatternId>
     {
-        public Color32 Color;
+        public ColorRGB Color;
         public PatternId PatternId;
 
-        public bool Equals(Color32 other) => Color.Equals(other);
+        public bool Equals(ColorRGB other) => Color.Equals(other);
         public bool Equals(PatternId other) => PatternId.Equals(other);
     }
 }
