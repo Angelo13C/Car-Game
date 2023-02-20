@@ -110,10 +110,9 @@ public struct WaveFunctionCollapse
             }
             cellToCollapse = new Cell { SuperPosition = cellToCollapse.SuperPosition >> 1 };
         }
-
         var randomValue = rng.NextUInt(totalWeight);
         var possiblePattern = possiblePatterns.Pop();
-        while(randomValue < possiblePattern.Weight)
+        while(randomValue >= possiblePattern.Weight)
         {
             randomValue -= possiblePattern.Weight;
             possiblePattern = possiblePatterns.Pop();
