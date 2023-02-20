@@ -48,20 +48,26 @@ public struct ImagePatternSetCreator
     public PatternGrid GeneratePatternGrid(Allocator allocator)
     {
         var grid = new Grid(_image.width, _image.height);
-        var patternGridElements = new NativeArray<int>(grid.Area, allocator);
-        var patternIdByColor = new NativeList<PatternIdAndColor>(8, Allocator.Temp);
         // For textures with alpha channel I need to use Color32 instead!!
         var pixels = _image.GetPixelData<ColorRGB>(0);
 
+        return GeneratePatternGrid(allocator, pixels, grid);
+    }
+
+    public static PatternGrid GeneratePatternGrid(Allocator allocator, NativeArray<ColorRGB> pixelData, Grid grid)
+    {
+        var patternGridElements = new NativeArray<int>(pixelData.Length, allocator);
+        var patternIdByColor = new NativeList<PatternIdAndColor>(8, Allocator.Temp);
+
         for(var i = 0; i < patternGridElements.Length; i++)
         {
-            var index = patternIdByColor.IndexOf(pixels[i]);
+            var index = patternIdByColor.IndexOf(pixelData[i]);
             if(index == -1)
             {
                 index = patternIdByColor.Length;
 
                 patternIdByColor.Add(new PatternIdAndColor {
-                    Color = pixels[i],
+                    Color = pixelData[i],
                     PatternId = new PatternId((uint) 1 << index)
                 });
             }
@@ -74,7 +80,7 @@ public struct ImagePatternSetCreator
         return new PatternGrid { Elements = patternGridElements, Grid = grid, PatternIdByColor = patternIdByColorArray };
     }
 
-    public PatternSet PatternGridToPatternSet(PatternGrid patternGrid, Allocator allocator)
+    public static PatternSet PatternGridToPatternSet(PatternGrid patternGrid, Allocator allocator)
     {
         var patterns = new NativeArray<Pattern>(patternGrid.PatternIdByColor.Length, allocator);
 
