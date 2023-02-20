@@ -86,7 +86,7 @@ public struct WaveFunctionCollapse
         for(var i = 0; i < cells.Length; i++)
         {
             var currentEntropy = cells[i].GetEntropy();
-            if(currentEntropy != 1 && (currentEntropy < minEntropy || minEntropy == byte.MaxValue))
+            if(currentEntropy != 1 && currentEntropy < minEntropy)
             {
                 minEntropyIndex = i;
                 minEntropy = currentEntropy;
@@ -160,7 +160,7 @@ public struct WaveFunctionCollapse
             {
                 var possiblePattern = possiblePatterns.Pop();
                 if(currentCell.Overlap(possiblePattern.GetValidNeighboursInDirection(oppositeDirection)) != Cell.EMPTY)
-                    neighbourCell.SuperPosition |= possiblePattern.ID.Value;
+                    neighbourCell = neighbourCell.Union(new Cell { SuperPosition = possiblePattern.ID.Value });
                 else
                     propagationStack.Push(neighbourCoords);
             }
