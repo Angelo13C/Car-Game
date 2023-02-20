@@ -1,6 +1,8 @@
 using System;
 using System.Text;
+using Unity.Burst;
 
+[BurstCompile]
 public struct Cell : IEquatable<Cell>
 {
     public uint SuperPosition;
@@ -9,9 +11,12 @@ public struct Cell : IEquatable<Cell>
 
     public static readonly Cell EMPTY = new Cell { SuperPosition = 0 };
 
+    [BurstCompile]
     public Cell Overlap(Cell other) => new Cell { SuperPosition = this.SuperPosition & other.SuperPosition };
+    [BurstCompile]
     public Cell Union(Cell other) => new Cell { SuperPosition = this.SuperPosition | other.SuperPosition };
 
+    [BurstCompile]
     public byte GetEntropy()
     {
         //Just count the number of bits set
@@ -25,6 +30,7 @@ public struct Cell : IEquatable<Cell>
         return entropy;
     }
 
+    [BurstCompile]
     public bool Equals(Cell other) => SuperPosition == other.SuperPosition;
     public static bool operator == (Cell cell1, Cell cell2) => cell1.Equals(cell2);
     public static bool operator != (Cell cell1, Cell cell2) => !cell1.Equals(cell2);

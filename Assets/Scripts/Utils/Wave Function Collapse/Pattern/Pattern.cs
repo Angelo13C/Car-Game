@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Unity.Burst;
 using Unity.Collections;
 
+[BurstCompile]
 public readonly struct PatternSet : IDisposable
 {
     public readonly NativeArray<Pattern> Patterns;
@@ -13,6 +15,7 @@ public readonly struct PatternSet : IDisposable
         Patterns = patterns;
     }
 
+    [BurstCompile]
     public Cell GetCellWithAllPossibleStates()
     {
         var cell = new Cell {
@@ -23,10 +26,13 @@ public readonly struct PatternSet : IDisposable
         return cell;
     }
 
+    [BurstCompile]
     public void Dispose() => Patterns.Dispose();
 
+    [BurstCompile]
     private struct PatternSetComparer : IComparer<Pattern>
     {
+        [BurstCompile]
         public int Compare(Pattern x, Pattern y)
         {
             return x.ID.Value.CompareTo(y.ID.Value);
@@ -43,6 +49,7 @@ public readonly struct PatternSet : IDisposable
     }
 }
 
+[BurstCompile]
 public struct Pattern
 {
     public PatternId ID;
@@ -54,6 +61,7 @@ public struct Pattern
     public Cell DownValidNeighbours;
     public Cell LeftValidNeighbours;
 
+    [BurstCompile]
     public Cell GetValidNeighboursInDirection(Direction direction)
     {
         switch(direction)
@@ -84,6 +92,7 @@ public enum Direction
 
 public static class DirectionExtensions
 {
+    [BurstCompile]
     public static Direction Opposite(this Direction direction)
     {
         switch(direction)
@@ -96,6 +105,7 @@ public static class DirectionExtensions
     }
 }
 
+[BurstCompile]
 public readonly struct PatternId : IEquatable<PatternId>
 {
     public readonly uint Value;
@@ -105,6 +115,7 @@ public readonly struct PatternId : IEquatable<PatternId>
         Value = value;
     }
 
+    [BurstCompile]
     public bool Equals(PatternId other) => Value == other.Value;
 
     public override string ToString() => Value.ToString();

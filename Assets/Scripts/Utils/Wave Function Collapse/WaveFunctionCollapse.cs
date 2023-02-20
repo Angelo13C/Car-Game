@@ -1,6 +1,8 @@
+using Unity.Burst;
 using Unity.Collections;
 using Unity.Mathematics;
 
+[BurstCompile]
 public struct WaveFunctionCollapse
 {
     private Grid _grid;
@@ -20,13 +22,14 @@ public struct WaveFunctionCollapse
     // Offset to apply to the seed if a collapse goes wrong (the actual value 123 is random)
     private const int SEED_OFFSET_INVALID_COLLAPSE = 123;
 
-    public NativeArray<Cell> Collapse(uint seed, Allocator allocator)
+    [BurstCompile]
+    public void Collapse(uint seed, Allocator allocator, out NativeArray<Cell> result)
     {
-        var cells = new NativeArray<Cell>(_grid.Area, allocator);
-        Collapse(seed, ref cells);
-        return cells;
+        result = new NativeArray<Cell>(_grid.Area, allocator);
+        Collapse(seed, ref result);
     }
 
+    [BurstCompile]
     public void Collapse(uint seed, ref NativeArray<Cell> result)
     {
         Initialize(result);
@@ -47,6 +50,7 @@ public struct WaveFunctionCollapse
         propagationStack.Dispose();
     }
 
+    [BurstCompile]
     private void Initialize(NativeArray<Cell> cells)
     {
         var highestEntropyCell = _patternSet.GetCellWithAllPossibleStates();
@@ -56,6 +60,7 @@ public struct WaveFunctionCollapse
         }
     }
 
+    [BurstCompile]
     private bool IsCollapsed(NativeArray<Cell> cells)
     {
         for(var i = 0; i < _grid.Area; i++)
@@ -67,6 +72,7 @@ public struct WaveFunctionCollapse
         return true;
     }
 
+    [BurstCompile]
     private Status Iterate(NativeArray<Cell> cells, NativeArrayStack<Pattern> patternsStack, NativeArrayStack<int> propagationStack, ref Random rng)
     {
         var coords = FindMinEntropyCoords(cells);
@@ -78,6 +84,7 @@ public struct WaveFunctionCollapse
         return Status.Valid;
     }
 
+    [BurstCompile]
     private int FindMinEntropyCoords(NativeArray<Cell> cells)
     {
         var minEntropyIndex = -1;
@@ -96,6 +103,7 @@ public struct WaveFunctionCollapse
         return minEntropy == 0 ? -1 : minEntropyIndex;
     }
 
+    [BurstCompile]
     private void CollapseCoords(int coords, NativeArray<Cell> cells, NativeArrayStack<Pattern> possiblePatterns, ref Random rng)
     {
         var cellToCollapse = cells[coords];
@@ -121,6 +129,7 @@ public struct WaveFunctionCollapse
         cells[coords] = new Cell { SuperPosition = possiblePattern.ID.Value };
     }
 
+    [BurstCompile]
     private void Propagate(int coords, NativeArray<Cell> cells, NativeArrayStack<Pattern> possiblePatterns, NativeArrayStack<int> propagationStack)
     {
         propagationStack.Clear();
@@ -138,6 +147,7 @@ public struct WaveFunctionCollapse
         }
     }
 
+    [BurstCompile]
     private void ConstrainNeighbour(int currentCoords, Direction direction, int directionOffset, NativeArray<Cell> cells, NativeArrayStack<Pattern> possiblePatterns, ref NativeArrayStack<int> propagationStack)
     {
         var currentCell = cells[currentCoords];

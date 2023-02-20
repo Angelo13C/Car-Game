@@ -1,10 +1,13 @@
 using System;
+using Unity.Burst;
 using Unity.Collections;
 using Unity.Mathematics;
 using UnityEngine;
 
+[BurstCompile]
 public struct ImagePatternSetCreator
 {    
+    [BurstCompile]
     public struct PatternGrid : IDisposable
     {
         public NativeArray<int> Elements;
@@ -13,8 +16,10 @@ public struct ImagePatternSetCreator
 
         public int2 Size => Grid.Size;
 
+        [BurstCompile]
         public int Get(int2 position) => Elements[Grid.GridPositionToIndex(position)];
 
+        [BurstCompile]
         public void Dispose()
         {
             Elements.Dispose();
@@ -45,16 +50,18 @@ public struct ImagePatternSetCreator
         public bool Equals(ColorRGB other) => R == other.R && G == other.G && B == other.B;
     }
 
-    public PatternGrid GeneratePatternGrid(Allocator allocator)
+    [BurstCompile]
+    public void GeneratePatternGrid(Allocator allocator, out PatternGrid result)
     {
         var grid = new Grid(_image.width, _image.height);
         // For textures with alpha channel I need to use Color32 instead!!
         var pixels = _image.GetPixelData<ColorRGB>(0);
 
-        return GeneratePatternGrid(allocator, pixels, grid);
+        GeneratePatternGrid(allocator, pixels, grid, out result);
     }
 
-    public static PatternGrid GeneratePatternGrid(Allocator allocator, NativeArray<ColorRGB> pixelData, Grid grid)
+    [BurstCompile]
+    public static void GeneratePatternGrid(Allocator allocator, in NativeArray<ColorRGB> pixelData, in Grid grid, out PatternGrid result)
     {
         var patternGridElements = new NativeArray<int>(pixelData.Length, allocator);
         var patternIdByColor = new NativeList<PatternIdAndColor>(8, Allocator.Temp);
@@ -77,10 +84,11 @@ public struct ImagePatternSetCreator
         
         var patternIdByColorArray = patternIdByColor.ToArray(allocator);
         patternIdByColor.Dispose();
-        return new PatternGrid { Elements = patternGridElements, Grid = grid, PatternIdByColor = patternIdByColorArray };
+        result = new PatternGrid { Elements = patternGridElements, Grid = grid, PatternIdByColor = patternIdByColorArray };
     }
 
-    public static PatternSet PatternGridToPatternSet(PatternGrid patternGrid, Allocator allocator)
+    [BurstCompile]
+    public static void PatternGridToPatternSet(in PatternGrid patternGrid, Allocator allocator, out PatternSet result)
     {
         var patterns = new NativeArray<Pattern>(patternGrid.PatternIdByColor.Length, allocator);
 
@@ -110,15 +118,18 @@ public struct ImagePatternSetCreator
             }            
         }
         
-        return new PatternSet(patterns);
+        result = new PatternSet(patterns);
     }
 
+    [BurstCompile]
     public struct PatternIdAndColor : IEquatable<ColorRGB>, IEquatable<PatternId>
     {
         public ColorRGB Color;
         public PatternId PatternId;
 
+        [BurstCompile]
         public bool Equals(ColorRGB other) => Color.Equals(other);
+        [BurstCompile]
         public bool Equals(PatternId other) => PatternId.Equals(other);
     }
 }

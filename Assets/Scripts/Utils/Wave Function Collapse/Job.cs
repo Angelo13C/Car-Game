@@ -2,7 +2,9 @@ using Unity.Jobs;
 using Unity.Collections;
 using static ImagePatternSetCreator;
 using UnityEngine;
+using Unity.Burst;
 
+[BurstCompile]
 public struct WaveFunctionCollapseJob : IJob
 {
     [ReadOnly] public NativeArray<ColorRGB> InputImage;
@@ -23,11 +25,12 @@ public struct WaveFunctionCollapseJob : IJob
         PatternIdByColorResult = new NativeList<PatternIdAndColor>(resultAllocation);
     }
     
+    [BurstCompile]
     public void Execute()
     {
-        var patternGrid = ImagePatternSetCreator.GeneratePatternGrid(Allocator.Temp, InputImage, InputImageGrid);
+        ImagePatternSetCreator.GeneratePatternGrid(Allocator.Temp, InputImage, InputImageGrid, out var patternGrid);
         PatternIdByColorResult.CopyFrom(patternGrid.PatternIdByColor);
-        var patternSet = ImagePatternSetCreator.PatternGridToPatternSet(patternGrid, Allocator.Temp);
+        ImagePatternSetCreator.PatternGridToPatternSet(patternGrid, Allocator.Temp, out var patternSet);
         var waveFunctionCollapse = new WaveFunctionCollapse(OutputGrid, patternSet);
         waveFunctionCollapse.Collapse(Seed, ref CollapsedResult);
     }
