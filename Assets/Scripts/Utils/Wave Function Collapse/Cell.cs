@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 
 public struct Cell : IEquatable<Cell>
 {
@@ -29,4 +30,22 @@ public struct Cell : IEquatable<Cell>
     public static bool operator != (Cell cell1, Cell cell2) => !cell1.Equals(cell2);
     public override bool Equals(Object obj) => obj is Cell c && this == c;
     public override int GetHashCode() => SuperPosition.GetHashCode();
+    
+    public override string ToString()
+    {
+        var result = new StringBuilder();
+        uint superPosition = SuperPosition;
+        var currentBit = 1;
+        while(superPosition != 0)
+        {
+            if((superPosition & 0x01) == 1)
+                result.Append("|" + currentBit);
+            superPosition = superPosition >> 1;
+            currentBit *= 2;
+        }
+        if(result.Length != 0)
+            result.Append('|');
+
+        return result.ToString();
+    }
 }

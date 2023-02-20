@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 using Unity.Collections;
 
 public readonly struct PatternSet : IDisposable
@@ -31,6 +32,15 @@ public readonly struct PatternSet : IDisposable
             return x.ID.Value.CompareTo(y.ID.Value);
         }
     }
+
+    public override string ToString()
+    {
+        var result = new StringBuilder(Patterns.Length * 200);
+        foreach(var pattern in Patterns)
+            result.Append(pattern).Append("\n\n");
+
+        return result.ToString();
+    }
 }
 
 public struct Pattern
@@ -54,6 +64,13 @@ public struct Pattern
             case Direction.Left: return LeftValidNeighbours;
         }
         return Cell.EMPTY;
+    }
+
+    public override string ToString()
+    {
+        return "ID: " + ID + "\nWeight: " + Weight + "\nUp valid neighbours: " + UpValidNeighbours
+             + "\nRight valid neighbours: " + RightValidNeighbours + "\nDown valid neighbours: " + DownValidNeighbours
+             + "\nLeft valid neighbours: " + LeftValidNeighbours;
     }
 }
 
@@ -89,4 +106,6 @@ public readonly struct PatternId : IEquatable<PatternId>
     }
 
     public bool Equals(PatternId other) => Value == other.Value;
+
+    public override string ToString() => Value.ToString();
 }
