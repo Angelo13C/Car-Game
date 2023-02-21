@@ -14,7 +14,7 @@ public struct NativeArrayHeap<T, U>: IDisposable where T : struct where U : stru
 
     public NativeArrayHeap(int capacity, Allocator allocator, U comparator = default)
     {
-        _elements = new NativeArray<T>(capacity, allocator);
+        _elements = new NativeArray<T>(capacity, allocator, NativeArrayOptions.UninitializedMemory);
         _comparator = comparator;
         Length = 0;
     }

@@ -13,7 +13,7 @@ public struct NativeArrayStack<T>: IDisposable where T : struct
 
     public NativeArrayStack(int capacity, Allocator allocator)
     {
-        _elements = new NativeArray<T>(capacity, allocator);
+        _elements = new NativeArray<T>(capacity, allocator, NativeArrayOptions.UninitializedMemory);
         Length = 0;
     }
 

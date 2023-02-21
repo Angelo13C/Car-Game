@@ -70,7 +70,7 @@ public class CityGeneratorAuthoringEditor : Editor
 				collapseJob.Item2.Complete();
 				var result = collapseJob.Item1.CollapsedResult;
 				var patternIdByColor = collapseJob.Item1.PatternIdByColorResult;
-				var resultTexturePixels = new NativeArray<Color32>(result.Length, Allocator.Persistent);
+				var resultTexturePixels = new NativeArray<Color32>(result.Length, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
 				for(var i = 0; i < result.Length; i++)
 				{
 					var colorIndex = patternIdByColor.IndexOf(new PatternId(result[i].SuperPosition));

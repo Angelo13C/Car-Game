@@ -21,7 +21,7 @@ public struct WaveFunctionCollapseJob : IJob
         InputImageGrid = new Grid(image.width, image.height);
         OutputGrid = outputGrid;
         Seed = seed;
-        CollapsedResult = new NativeArray<Cell>(OutputGrid.Area, resultAllocation);
+        CollapsedResult = new NativeArray<Cell>(OutputGrid.Area, resultAllocation, NativeArrayOptions.UninitializedMemory);
         PatternIdByColorResult = new NativeList<PatternIdAndColor>(resultAllocation);
     }
     

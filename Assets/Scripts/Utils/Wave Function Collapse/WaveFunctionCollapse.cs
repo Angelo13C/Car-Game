@@ -25,7 +25,7 @@ public struct WaveFunctionCollapse
     [BurstCompile]
     public void Collapse(uint seed, Allocator allocator, out NativeArray<Cell> result)
     {
-        result = new NativeArray<Cell>(_grid.Area, allocator);
+        result = new NativeArray<Cell>(_grid.Area, allocator, NativeArrayOptions.UninitializedMemory);
         Collapse(seed, ref result);
     }
 

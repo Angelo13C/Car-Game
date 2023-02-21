@@ -84,7 +84,7 @@ public partial struct ExplodeSystem : ISystem
 
             if(CollisionWorld.OverlapSphere(ExplosionPosition, Explosion.Config.Radius, ref hittedObjects, collisionFilter))
             {
-                var alreadyHitRigidbodies = new NativeArray<int>(hittedObjects.Length, Allocator.Temp);
+                var alreadyHitRigidbodies = new NativeArray<int>(hittedObjects.Length, Allocator.Temp, NativeArrayOptions.UninitializedMemory);
                 var alreadyHitRigidbodiesIndex = 0;
                 var up = new float3(0, 1, 0);
                 foreach(var hit in hittedObjects)

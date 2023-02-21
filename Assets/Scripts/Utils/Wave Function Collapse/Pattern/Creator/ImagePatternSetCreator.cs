@@ -63,7 +63,7 @@ public struct ImagePatternSetCreator
     [BurstCompile]
     public static void GeneratePatternGrid(Allocator allocator, in NativeArray<ColorRGB> pixelData, in Grid grid, out PatternGrid result)
     {
-        var patternGridElements = new NativeArray<int>(pixelData.Length, allocator);
+        var patternGridElements = new NativeArray<int>(pixelData.Length, allocator, NativeArrayOptions.UninitializedMemory);
         var patternIdByColor = new NativeList<PatternIdAndColor>(8, Allocator.Temp);
 
         for(var i = 0; i < patternGridElements.Length; i++)
