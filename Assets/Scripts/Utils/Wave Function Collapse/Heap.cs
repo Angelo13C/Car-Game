@@ -19,12 +19,14 @@ public struct EntropyCellComparator : IComparator<EntropyCell>
 public struct EntropyHeap : IDisposable
 {
     private NativeArrayHeap<EntropyCell, EntropyCellComparator> _heap;
+    // A value of -1 indicates that the cell with those coords isn't in the heap
     private NativeArray<int> _indexOfEntropyCellByCoords;
      
     public EntropyHeap(int area, Allocator allocator)
     {
         _heap = new NativeArrayHeap<EntropyCell, EntropyCellComparator>(area, allocator);
         _indexOfEntropyCellByCoords = new NativeArray<int>(area, allocator, NativeArrayOptions.UninitializedMemory);
+        // Set every index to -1
         unsafe { UnsafeUtility.MemSet(_indexOfEntropyCellByCoords.GetUnsafePtr(), 0xff, _indexOfEntropyCellByCoords.Length * UnsafeUtility.SizeOf<int>()); }
     }
 
