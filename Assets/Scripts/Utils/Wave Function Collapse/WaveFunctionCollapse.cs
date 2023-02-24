@@ -36,7 +36,7 @@ public struct WaveFunctionCollapse
 
         var rng = new Random(seed);
         var patternsStack = new NativeArrayStack<Pattern>(_patternSet.Patterns.Length, Allocator.Temp);
-        var propagationStack = new NativeArrayStack<int>(_grid.Area, Allocator.Temp);
+        var propagationStack = new NativeArrayStack<int2>(_grid.Area, Allocator.Temp);
         var entropyHeap = new EntropyHeap(_grid.Area, Allocator.Temp);
         while(!IsCollapsed(result))
         {
@@ -75,7 +75,7 @@ public struct WaveFunctionCollapse
     }
 
     [BurstCompile]
-    private Status Iterate(NativeArray<Cell> cells, ref EntropyHeap entropyHeap, NativeArrayStack<Pattern> patternsStack, NativeArrayStack<int> propagationStack, ref Random rng)
+    private Status Iterate(NativeArray<Cell> cells, ref EntropyHeap entropyHeap, NativeArrayStack<Pattern> patternsStack, NativeArrayStack<int2> propagationStack, ref Random rng)
     {
         var coords = FindMinEntropyCoords(cells, ref entropyHeap, ref rng);
         CollapseCoords(coords, cells, patternsStack, ref rng);
@@ -83,7 +83,7 @@ public struct WaveFunctionCollapse
     }
 
     [BurstCompile]
-    private int FindMinEntropyCoords(NativeArray<Cell> cells, ref EntropyHeap entropyHeap, ref Random rng)
+    private int2 FindMinEntropyCoords(NativeArray<Cell> cells, ref EntropyHeap entropyHeap, ref Random rng)
     {
         var coords = entropyHeap.GetMinEntropyCellCoords();
         if(coords == -1)
@@ -94,15 +94,16 @@ public struct WaveFunctionCollapse
             } while(cells[coords].IsCollapsed);
         }
 
-        return coords;
+        return _grid.IndexToGridPosition(coords);
     }
 
     [BurstCompile]
-    private void CollapseCoords(int coords, NativeArray<Cell> cells, NativeArrayStack<Pattern> possiblePatterns, ref Random rng)
+    private void CollapseCoords(int2 coords, NativeArray<Cell> cells, NativeArrayStack<Pattern> possiblePatterns, ref Random rng)
     {
-        var cellToCollapse = cells[coords];
+        var cellToCollapse = cells[_grid.GridPositionToIndex(coords)];
         uint totalWeight = 0;
         possiblePatterns.Clear();
+
         for(var i = 0; i < _patternSet.Patterns.Length; i++)
         {
             if((cellToCollapse.SuperPosition & 0x01) == 1)
@@ -120,11 +121,11 @@ public struct WaveFunctionCollapse
             possiblePattern = possiblePatterns.Pop();
         }
 
-        cells[coords] = new Cell { SuperPosition = possiblePattern.ID.Value };
+        cells[_grid.GridPositionToIndex(coords)] = new Cell { SuperPosition = possiblePattern.ID.Value };
     }
 
     [BurstCompile]
-    private Status Propagate(int coords, NativeArray<Cell> cells, ref EntropyHeap entropyHeap, NativeArrayStack<Pattern> possiblePatterns, NativeArrayStack<int> propagationStack)
+    private Status Propagate(int2 coords, NativeArray<Cell> cells, ref EntropyHeap entropyHeap, NativeArrayStack<Pattern> possiblePatterns, NativeArrayStack<int2> propagationStack)
     {
         propagationStack.Clear();
         propagationStack.Push(coords);
@@ -132,28 +133,29 @@ public struct WaveFunctionCollapse
         while(!propagationStack.IsEmpty())
         {
             var currentCoords = propagationStack.Pop();
-            var currentCell = cells[currentCoords];
+            var currentCell = cells[_grid.GridPositionToIndex(currentCoords)];
 
-            if(ConstrainNeighbour(currentCoords, Direction.Right, 1, cells, ref entropyHeap, possiblePatterns, ref propagationStack) == Status.Invalid)
+            if(ConstrainNeighbour(currentCoords, Direction.Right, cells, ref entropyHeap, possiblePatterns, ref propagationStack) == Status.Invalid)
                 return Status.Invalid;
-            if(ConstrainNeighbour(currentCoords, Direction.Left, -1, cells, ref entropyHeap, possiblePatterns, ref propagationStack) == Status.Invalid)
+            if(ConstrainNeighbour(currentCoords, Direction.Left, cells, ref entropyHeap, possiblePatterns, ref propagationStack) == Status.Invalid)
                 return Status.Invalid;
-            if(ConstrainNeighbour(currentCoords, Direction.Down, _grid.Size.x, cells, ref entropyHeap, possiblePatterns, ref propagationStack) == Status.Invalid)
+            if(ConstrainNeighbour(currentCoords, Direction.Down, cells, ref entropyHeap, possiblePatterns, ref propagationStack) == Status.Invalid)
                 return Status.Invalid;
-            if(ConstrainNeighbour(currentCoords, Direction.Up, -_grid.Size.x, cells, ref entropyHeap, possiblePatterns, ref propagationStack) == Status.Invalid)
+            if(ConstrainNeighbour(currentCoords, Direction.Up, cells, ref entropyHeap, possiblePatterns, ref propagationStack) == Status.Invalid)
                 return Status.Invalid;
         }
         return Status.Valid;
     }
 
     [BurstCompile]
-    private Status ConstrainNeighbour(int currentCoords, Direction direction, int directionOffset, NativeArray<Cell> cells, ref EntropyHeap entropyHeap, NativeArrayStack<Pattern> possiblePatterns, ref NativeArrayStack<int> propagationStack)
+    private Status ConstrainNeighbour(int2 currentCoords, Direction direction, NativeArray<Cell> cells, ref EntropyHeap entropyHeap, NativeArrayStack<Pattern> possiblePatterns, ref NativeArrayStack<int2> propagationStack)
     {
-        var currentCell = cells[currentCoords];
-        var neighbourCoords = currentCoords + directionOffset;
-        if(_grid.IsIndexValid(neighbourCoords))
+        var neighbourCoords = currentCoords + direction.ToPosition();
+        if(_grid.IsGridPositionValid(neighbourCoords))
         {
-            var neighbourCell = cells[neighbourCoords];
+            var neighbourIndex = _grid.GridPositionToIndex(neighbourCoords);
+            var currentCell = cells[_grid.GridPositionToIndex(currentCoords)];
+            var neighbourCell = cells[neighbourIndex];
             possiblePatterns.Clear();
             for(var i = 0; i < _patternSet.Patterns.Length; i++)
             {
@@ -178,8 +180,8 @@ public struct WaveFunctionCollapse
             if(changed)
             {
                 propagationStack.Push(neighbourCoords);
-                cells[neighbourCoords] = neighbourCell;
-                entropyHeap.UpdateCoordsWithValue(neighbourCoords, neighbourCell);
+                cells[neighbourIndex] = neighbourCell;
+                entropyHeap.UpdateCoordsWithValue(neighbourIndex, neighbourCell);
                 if(neighbourCell == Cell.EMPTY)
                     return Status.Invalid;
             }
