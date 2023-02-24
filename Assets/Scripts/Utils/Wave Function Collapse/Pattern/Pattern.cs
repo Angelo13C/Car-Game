@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Unity.Burst;
 using Unity.Collections;
+using Unity.Mathematics;
 
 [BurstCompile]
 public readonly struct PatternSet : IDisposable
@@ -74,6 +75,26 @@ public struct Pattern
         return Cell.EMPTY;
     }
 
+    [BurstCompile]
+    public void AddValidNeighbourInDirection(Direction direction, Cell value)
+    {
+        switch(direction)
+        {
+            case Direction.Up: 
+                UpValidNeighbours.SuperPosition |= value.SuperPosition;
+                break;
+            case Direction.Right: 
+                RightValidNeighbours.SuperPosition |= value.SuperPosition;;
+                break;
+            case Direction.Down: 
+                DownValidNeighbours.SuperPosition |= value.SuperPosition;;
+                break;
+            case Direction.Left: 
+                LeftValidNeighbours.SuperPosition |= value.SuperPosition;;
+                break;
+        }
+    }
+
     public override string ToString()
     {
         return "ID: " + ID + "\nWeight: " + Weight + "\nUp valid neighbours: " + UpValidNeighbours
@@ -101,6 +122,17 @@ public static class DirectionExtensions
             case Direction.Right: return Direction.Left;
             case Direction.Down: return Direction.Up;
             default: return Direction.Right;
+        }
+    }
+    [BurstCompile]
+    public static int2 ToPosition(this Direction direction)
+    {
+        switch(direction)
+        {
+            case Direction.Up: return new int2(0, 1);
+            case Direction.Right: return new int2(1, 0);
+            case Direction.Down: return new int2(0, -1);
+            default: return new int2(-1, 0);
         }
     }
 }

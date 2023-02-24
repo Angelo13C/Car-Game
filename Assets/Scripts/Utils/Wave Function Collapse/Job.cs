@@ -10,17 +10,19 @@ public struct WaveFunctionCollapseJob : IJob
     [ReadOnly] public NativeArray<ColorRGB> InputImage;
     [ReadOnly] public Grid InputImageGrid;
     [ReadOnly] public uint Seed;
+    [ReadOnly] public int N;
 
     [ReadOnly] public Grid OutputGrid;
     public NativeArray<Cell> CollapsedResult;
     public NativeList<PatternIdAndColor> PatternIdByColorResult;
 
-    public WaveFunctionCollapseJob(Texture2D image, Grid outputGrid, uint seed, Allocator resultAllocation)
+    public WaveFunctionCollapseJob(Texture2D image, Grid outputGrid, uint seed, int n, Allocator resultAllocation)
     {
         InputImage = image.GetPixelData<ColorRGB>(0);
         InputImageGrid = new Grid(image.width, image.height);
         OutputGrid = outputGrid;
         Seed = seed;
+        N = n;
         CollapsedResult = new NativeArray<Cell>(OutputGrid.Area, resultAllocation, NativeArrayOptions.UninitializedMemory);
         PatternIdByColorResult = new NativeList<PatternIdAndColor>(resultAllocation);
     }
@@ -29,8 +31,12 @@ public struct WaveFunctionCollapseJob : IJob
     public void Execute()
     {
         ImagePatternSetCreator.GeneratePatternGrid(Allocator.Temp, InputImage, InputImageGrid, out var patternGrid);
+        PatternSet patternSet;
+        if(N > 1)
+            new PatternSetCreatorNN().PatternGridToPatternSetNN(ref patternGrid, N, Allocator.Temp, out patternSet);
+        else
+            new PatternSetCreator().PatternGridToPatternSet(patternGrid, Allocator.Temp, out patternSet);
         PatternIdByColorResult.CopyFrom(patternGrid.PatternIdByColor);
-        ImagePatternSetCreator.PatternGridToPatternSet(patternGrid, Allocator.Temp, out var patternSet);
         var waveFunctionCollapse = new WaveFunctionCollapse(OutputGrid, patternSet);
         waveFunctionCollapse.Collapse(Seed, ref CollapsedResult);
     }

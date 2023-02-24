@@ -1715,6 +1715,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 663c9b4d38a95214597e403b566fdb05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _inputCityImage: {fileID: 2800000, guid: 1a413328c6299d8469c84f1fdef55fdf, type: 3}
-  _citySize: {x: 50, y: 50}
-  Seed: 1
+  _inputCityImage: {fileID: 2800000, guid: 054e593b40a067547b78cdf7af6d1202, type: 3}
+  _citySize: {x: 100, y: 100}
+  N: 3
+  Seed: 1649

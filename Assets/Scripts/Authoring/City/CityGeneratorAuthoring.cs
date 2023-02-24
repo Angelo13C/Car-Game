@@ -16,6 +16,8 @@ public class CityGeneratorAuthoring : MonoBehaviour
 	[SerializeField] private Vector2Int _citySize = new Vector2Int(50, 50);
 	public Vector2Int CitySize => _citySize;
 
+	[Range(1, 5)] public int N = 1;
+
 	[Min(1)] public uint Seed = 1;
 
 	class Baker : Baker<CityGeneratorAuthoring>
@@ -58,7 +60,7 @@ public class CityGeneratorAuthoringEditor : Editor
 		{
 			var grid = new Grid(cityGeneratorAuthoring.CitySize.x, cityGeneratorAuthoring.CitySize.y);
 			var job = new WaveFunctionCollapseJob(cityGeneratorAuthoring.InputCityImage, grid, 
-				cityGeneratorAuthoring.Seed, Allocator.Persistent);
+				cityGeneratorAuthoring.Seed, cityGeneratorAuthoring.N, Allocator.Persistent);
 			var jobHandle = job.Schedule();
 			_collapseJobByCityGenerator[cityGeneratorAuthoring] = (job, jobHandle);
 		}
