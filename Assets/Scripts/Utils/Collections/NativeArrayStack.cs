@@ -3,35 +3,34 @@ using Unity.Burst;
 using Unity.Collections;
 
 [BurstCompile]
-public struct NativeArrayStack<T>: IDisposable where T : struct
+public struct NativeArrayStack<T>: IDisposable where T : unmanaged
 {
-    private NativeArray<T> _elements;
-    public int Length { get; private set; }
+    private NativeList<T> _elements;
+    public int Length => _elements.Length;
 
     [BurstCompile]
     public bool IsEmpty() => Length == 0;
 
     public NativeArrayStack(int capacity, Allocator allocator)
     {
-        _elements = new NativeArray<T>(capacity, allocator, NativeArrayOptions.UninitializedMemory);
-        Length = 0;
+        _elements = new NativeList<T>(capacity, allocator);
     }
 
     [BurstCompile]
     public void Push(T element)
     {
-        _elements[Length] = element;
-        Length++;
+        _elements.Add(element);
     }
     [BurstCompile]
     public T Pop()
     {
-        Length--;
-        return _elements[Length];
+        var value = _elements[Length - 1];
+        _elements.RemoveAt(Length - 1);
+        return value;
     }
 
     [BurstCompile]
-    public void Clear() => Length = 0;
+    public void Clear() => _elements.Clear();
 
     [BurstCompile]
     public void Dispose() => _elements.Dispose();
