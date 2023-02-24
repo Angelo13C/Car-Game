@@ -70,6 +70,12 @@ public class CityGeneratorAuthoringEditor : Editor
 			{
 				_collapseJobByCityGenerator.Remove(cityGeneratorAuthoring);
 				collapseJob.Item2.Complete();
+				if(collapseJob.Item1.Error)
+				{
+					UnityEngine.Debug.LogError("There was an error in the wave function collapse");
+					return;
+				}
+				
 				var result = collapseJob.Item1.CollapsedResult;
 				var patternIdByColor = collapseJob.Item1.PatternIdByColorResult;
 				var resultTexturePixels = new NativeArray<Color32>(result.Length, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);

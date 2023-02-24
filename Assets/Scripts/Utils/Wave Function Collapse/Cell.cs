@@ -5,7 +5,7 @@ using Unity.Burst;
 [BurstCompile]
 public struct Cell : IEquatable<Cell>
 {
-    public uint SuperPosition;
+    public ulong SuperPosition;
 
     public bool IsCollapsed => (SuperPosition & (SuperPosition -1)) == 0;
 
@@ -20,7 +20,7 @@ public struct Cell : IEquatable<Cell>
     public byte GetEntropy()
     {
         //Just count the number of bits set
-        uint superPosition = SuperPosition;
+        var superPosition = SuperPosition;
         byte entropy = 0;
         while(superPosition != 0)
         {
@@ -40,8 +40,8 @@ public struct Cell : IEquatable<Cell>
     public override string ToString()
     {
         var result = new StringBuilder();
-        uint superPosition = SuperPosition;
-        var currentBit = 1;
+        var superPosition = SuperPosition;
+        ulong currentBit = 1;
         while(superPosition != 0)
         {
             if((superPosition & 0x01) == 1)

@@ -11,6 +11,7 @@ public struct WaveFunctionCollapseJob : IJob
     [ReadOnly] public Grid InputImageGrid;
     [ReadOnly] public uint Seed;
     [ReadOnly] public int N;
+    public bool Error;
 
     [ReadOnly] public Grid OutputGrid;
     public NativeArray<Cell> CollapsedResult;
@@ -23,6 +24,7 @@ public struct WaveFunctionCollapseJob : IJob
         OutputGrid = outputGrid;
         Seed = seed;
         N = n;
+        Error = false;
         CollapsedResult = new NativeArray<Cell>(OutputGrid.Area, resultAllocation, NativeArrayOptions.UninitializedMemory);
         PatternIdByColorResult = new NativeList<PatternIdAndColor>(resultAllocation);
     }
@@ -32,10 +34,17 @@ public struct WaveFunctionCollapseJob : IJob
     {
         ImagePatternSetCreator.GeneratePatternGrid(Allocator.Temp, InputImage, InputImageGrid, out var patternGrid);
         PatternSet patternSet;
+        Result result;
         if(N > 1)
-            new PatternSetCreatorNN().PatternGridToPatternSetNN(ref patternGrid, N, Allocator.Temp, out patternSet);
+            result = new PatternSetCreatorNN().PatternGridToPatternSetNN(ref patternGrid, N, Allocator.Temp, out patternSet);
         else
-            new PatternSetCreator().PatternGridToPatternSet(patternGrid, Allocator.Temp, out patternSet);
+            result = new PatternSetCreator().PatternGridToPatternSet(patternGrid, Allocator.Temp, out patternSet);
+        if(result == Result.NotEnoughSpace)
+        {
+            Error = true;
+            return;
+        }
+        
         PatternIdByColorResult.CopyFrom(patternGrid.PatternIdByColor);
         var waveFunctionCollapse = new WaveFunctionCollapse(OutputGrid, patternSet);
         waveFunctionCollapse.Collapse(Seed, ref CollapsedResult);

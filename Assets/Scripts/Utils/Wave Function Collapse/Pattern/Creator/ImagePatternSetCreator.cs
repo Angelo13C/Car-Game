@@ -75,7 +75,7 @@ public struct ImagePatternSetCreator
 
                 patternIdByColor.Add(new PatternIdAndColor {
                     Color = pixelData[i],
-                    PatternId = new PatternId((uint) 1 << index)
+                    PatternId = new PatternId((ulong) 1 << index)
                 });
             }
             // I temporarily store the index instead of the actual id (which is the log2(id)) to make list lookup faster

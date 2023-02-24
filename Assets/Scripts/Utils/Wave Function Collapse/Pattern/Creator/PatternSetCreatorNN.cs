@@ -5,7 +5,7 @@ using Unity.Mathematics;
 public struct PatternSetCreatorNN
 {    
     [BurstCompile]
-    public void PatternGridToPatternSetNN(ref ImagePatternSetCreator.PatternGrid patternGrid, int n, Allocator allocator, out PatternSet result)
+    public Result PatternGridToPatternSetNN(ref ImagePatternSetCreator.PatternGrid patternGrid, int n, Allocator allocator, out PatternSet result)
     {
         var patternsNN = new PatternsNN(n, allocator);
 
@@ -25,6 +25,12 @@ public struct PatternSetCreatorNN
                 patternsNN.RemoveNewPatternIfAlreadyExists();
             }
         }
+
+        if(patternsNN.Length >= sizeof(ulong) * 8)
+        {
+            result = new PatternSet();
+            return Result.NotEnoughSpace;
+        }
         
         var newPatternIdByColor =  new NativeArray<ImagePatternSetCreator.PatternIdAndColor>(patternsNN.Length, allocator, NativeArrayOptions.UninitializedMemory);        
         var patterns = new NativeArray<Pattern>(patternsNN.Length, allocator);
@@ -34,7 +40,7 @@ public struct PatternSetCreatorNN
 
             newPatternIdByColor[i] = new ImagePatternSetCreator.PatternIdAndColor {
                 Color = patternGrid.PatternIdByColor[patternsNN.GetValue(patternI, new int2(0, 0))].Color,
-                PatternId = new PatternId((uint) 1 << i)
+                PatternId = new PatternId((ulong) 1 << i)
             };
             
             var updatedPattern = patterns[i];
@@ -63,8 +69,8 @@ public struct PatternSetCreatorNN
                     if(compatible)
                     {
                         var pattern = patterns[i];
-                        pattern.ID = new PatternId((uint) 1 << i);
-                        pattern.AddValidNeighbourInDirection(direction, new Cell { SuperPosition = (uint) 1 << j });
+                        pattern.ID = new PatternId((ulong) 1 << i);
+                        pattern.AddValidNeighbourInDirection(direction, new Cell { SuperPosition = (ulong) 1 << j });
                         patterns[i] = pattern;
 
                         var otherPattern = patterns[j];
@@ -81,5 +87,7 @@ public struct PatternSetCreatorNN
         patternGrid.PatternIdByColor = newPatternIdByColor;
         
         result = new PatternSet(patterns);
+        
+        return Result.Ok;
     }
 }

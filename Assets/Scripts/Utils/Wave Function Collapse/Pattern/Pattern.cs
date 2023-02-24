@@ -140,9 +140,9 @@ public static class DirectionExtensions
 [BurstCompile]
 public readonly struct PatternId : IEquatable<PatternId>
 {
-    public readonly uint Value;
+    public readonly ulong Value;
 
-    public PatternId(uint value)
+    public PatternId(ulong value)
     {
         Value = value;
     }
