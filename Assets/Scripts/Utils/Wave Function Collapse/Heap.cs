@@ -4,10 +4,12 @@ using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 
 [BurstCompile]
-public struct EntropyCell
+public struct EntropyCell : IHeapElement
 {
     public byte Entropy;
     public int CellCoords;
+
+    public int CustomIndex { get => CellCoords; set => CellCoords = value; }
 }
 [BurstCompile]
 public struct EntropyCellComparator : IComparator<EntropyCell>
@@ -19,22 +21,16 @@ public struct EntropyCellComparator : IComparator<EntropyCell>
 public struct EntropyHeap : IDisposable
 {
     private NativeArrayHeap<EntropyCell, EntropyCellComparator> _heap;
-    // A value of -1 indicates that the cell with those coords isn't in the heap
-    private NativeArray<int> _indexOfEntropyCellByCoords;
      
     public EntropyHeap(int area, Allocator allocator)
     {
         _heap = new NativeArrayHeap<EntropyCell, EntropyCellComparator>(area, allocator);
-        _indexOfEntropyCellByCoords = new NativeArray<int>(area, allocator, NativeArrayOptions.UninitializedMemory);
-        // Set every index to -1
-        unsafe { UnsafeUtility.MemSet(_indexOfEntropyCellByCoords.GetUnsafePtr(), 0xff, _indexOfEntropyCellByCoords.Length * UnsafeUtility.SizeOf<int>()); }
     }
 
     [BurstCompile]
     public void Dispose()
     {
         _heap.Dispose();
-        _indexOfEntropyCellByCoords.Dispose();
     }
 
     [BurstCompile]
@@ -50,22 +46,13 @@ public struct EntropyHeap : IDisposable
     public void UpdateCoordsWithValue(int coords, Cell value)
     {
         var entropyCell = new EntropyCell { Entropy = value.GetEntropy(), CellCoords = coords };
-        var index = _indexOfEntropyCellByCoords[coords];
-        if(index != -1 && entropyCell.Entropy <= 1)
+        if(entropyCell.Entropy <= 1)
         {
-            _heap.RemoveElement(index);
-            _indexOfEntropyCellByCoords[coords] = -1;
+            _heap.RemoveElement(entropyCell);
         }
         else
         {
-            if(index == -1)
-            {
-                _indexOfEntropyCellByCoords[coords] = _heap.Add(entropyCell);
-            }
-            else
-            {
-                _indexOfEntropyCellByCoords[coords] = _heap.UpdateElement(entropyCell, index);
-            }
+            _heap.UpdateElement(entropyCell);
         }
     }
 }

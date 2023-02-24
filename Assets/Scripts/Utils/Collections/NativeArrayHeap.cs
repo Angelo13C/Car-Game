@@ -1,11 +1,16 @@
 using System;
 using Unity.Burst;
 using Unity.Collections;
+using Unity.Collections.LowLevel.Unsafe;
 
 [BurstCompile]
-public struct NativeArrayHeap<T, U>: IDisposable where T : struct where U : struct, IComparator<T>
+public struct NativeArrayHeap<T, U>: IDisposable where T : struct, IHeapElement where U : struct, IComparator<T>
 {
     private NativeArray<T> _elements;
+    
+    // A value of -1 indicates that the element with that custom index isn't in the heap
+    private NativeArray<int> _elementIndexByCustomIndex;
+     
     private U _comparator;
     public int Length { get; private set; }
     
@@ -17,67 +22,83 @@ public struct NativeArrayHeap<T, U>: IDisposable where T : struct where U : stru
         _elements = new NativeArray<T>(capacity, allocator, NativeArrayOptions.UninitializedMemory);
         _comparator = comparator;
         Length = 0;
+        
+        _elementIndexByCustomIndex = new NativeArray<int>(capacity, allocator, NativeArrayOptions.UninitializedMemory);
+        // Set every index to -1
+        unsafe { UnsafeUtility.MemSet(_elementIndexByCustomIndex.GetUnsafePtr(), 0xff, _elementIndexByCustomIndex.Length * UnsafeUtility.SizeOf<int>()); }
     }
 
     [BurstCompile]
-    public int Add(T element)
+    public bool Contains(T element) => _elementIndexByCustomIndex[element.CustomIndex] != -1;
+
+    [BurstCompile]
+    public void Add(T element)
     {
+        _elementIndexByCustomIndex[element.CustomIndex] = Length;
         _elements[Length] = element;
-        var index = SortUp(Length);
+        SortUp(element);
         Length++;
-        return index;
     }
 
     [BurstCompile]
     public T RemoveFirst()
     {
         var firstElement = _elements[0];
-        RemoveElement(0);
+        RemoveElement(firstElement);
         return firstElement;
     }
 
     [BurstCompile]
-    public int UpdateElement(T element, int elementIndex)
+    public void UpdateElement(T element)
     {
-        _elements[elementIndex] = element;
-        return SortUp(elementIndex);
-        // I don't need sort down in this project since entropy is only going down, not up
-        //SortDown(elementIndex);
+        if(!Contains(element))
+            Add(element);
+        else
+        {
+            _elements[_elementIndexByCustomIndex[element.CustomIndex]] = element;
+            SortUp(element);
+            // I don't need sort down in this project since entropy is only going down, not up
+            //SortDown(elementIndex);
+        }
     }
 
     [BurstCompile]
-    private int SortUp(int elementIndex)
+    private void SortUp(T element)
     {
-        var parentIndex = (elementIndex - 1) / 2;
+        var parentIndex = (_elementIndexByCustomIndex[element.CustomIndex] - 1) / 2;
         while(true)
         {
-            if(_comparator.Compare(_elements[elementIndex], _elements[parentIndex]) > 0)
+            var parentElement = _elements[parentIndex];
+            if(_comparator.Compare(element, parentElement) > 0)
             {
-                Swap(elementIndex, parentIndex);
-                elementIndex = parentIndex;
+                Swap(element, parentElement);
+                element = parentElement;
             }
             else
                 break;
 
             parentIndex = (parentIndex - 1) / 2;
         }
-
-        return elementIndex;
     }
 
     [BurstCompile]
-    public void RemoveElement(int elementIndex)
+    public void RemoveElement(T element)
     {
+        if(!Contains(element))
+            return;
+            
         Length--;
-        _elements[elementIndex] = _elements[Length];
-        SortDown(elementIndex);
+        Swap(element, _elements[Length]);
+        SortDown(_elements[_elementIndexByCustomIndex[element.CustomIndex]]);
+        _elementIndexByCustomIndex[element.CustomIndex] = -1;
     }
 
     [BurstCompile]
-    private void SortDown(int elementIndex)
+    private void SortDown(T element)
     {
         while(true)
         {
+            var elementIndex = _elementIndexByCustomIndex[element.CustomIndex];
             var childIndexLeft = (elementIndex * 2) + 1;
             var childIndexRight = (elementIndex * 2) + 2;
             var swapIndex = 0;
@@ -92,8 +113,11 @@ public struct NativeArrayHeap<T, U>: IDisposable where T : struct where U : stru
                         swapIndex = childIndexRight;
                 }
 
-                if(_comparator.Compare(_elements[elementIndex], _elements[swapIndex]) < 0)
-                    Swap(elementIndex, swapIndex);
+                if(_comparator.Compare(element, _elements[swapIndex]) < 0)
+                {
+                    Swap(element, _elements[swapIndex]);
+                    element = _elements[swapIndex];
+                }
                 else
                     return;
             }
@@ -103,11 +127,15 @@ public struct NativeArrayHeap<T, U>: IDisposable where T : struct where U : stru
     }
 
     [BurstCompile]
-    private void Swap(int aIndex, int bIndex)
+    private void Swap(T a, T b)
     {
-        var temp = _elements[aIndex];
-        _elements[aIndex] = _elements[bIndex];
-        _elements[bIndex] = temp;
+        var aIndex = _elementIndexByCustomIndex[a.CustomIndex];
+        var bIndex = _elementIndexByCustomIndex[b.CustomIndex];
+        _elements[aIndex] = b;
+        _elements[bIndex] = a;
+
+        _elementIndexByCustomIndex[a.CustomIndex] = bIndex;
+        _elementIndexByCustomIndex[b.CustomIndex] = aIndex;
     }
 
     [BurstCompile]
@@ -115,6 +143,11 @@ public struct NativeArrayHeap<T, U>: IDisposable where T : struct where U : stru
 
     [BurstCompile]
     public void Dispose() => _elements.Dispose();
+}
+
+public interface IHeapElement
+{
+    public int CustomIndex { get; set; }
 }
 
 public interface IComparator<T>
