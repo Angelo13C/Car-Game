@@ -9,15 +9,6 @@ using Unity.Transforms;
 public partial struct ExplodeOnDeathSystem : ISystem
 {
     [BurstCompile]
-    public void OnCreate(ref SystemState state)
-    {
-    }
-    [BurstCompile]
-    public void OnDestroy(ref SystemState state)
-    {
-    }
-
-    [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
         var entityCommandBuffer = new EntityCommandBuffer(Allocator.Temp);

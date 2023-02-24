@@ -4,15 +4,6 @@ using Unity.Mathematics;
 
 public partial struct SmokeOnLowHealthSystem : ISystem
 {
-    [BurstCompile]
-    public void OnCreate(ref SystemState state)
-    {
-    }
-    [BurstCompile]
-    public void OnDestroy(ref SystemState state)
-    {
-    }
-
     public void OnUpdate(ref SystemState state)
     {
         foreach(var (smokeOnLowHealth, health) in SystemAPI.Query<SmokeOnLowHealth, Health>())

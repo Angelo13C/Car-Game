@@ -5,16 +5,7 @@ using System.IO;
 [UpdateBefore(typeof(RoadTileMapEditorInputSystem))]
 [BurstCompile]
 public partial struct LoadRoadTileMapSystem : ISystem
-{
-    [BurstCompile]
-    public void OnCreate(ref SystemState state)
-    {
-    }
-    [BurstCompile]
-    public void OnDestroy(ref SystemState state)
-    {
-    }
-    
+{    
     public void OnUpdate(ref SystemState state)
     {
         foreach(var (savableRoadTileMap, roadTileMap) in SystemAPI.Query<RefRW<SavableRoadTileMap>, RefRW<RoadTileMapReference>>())

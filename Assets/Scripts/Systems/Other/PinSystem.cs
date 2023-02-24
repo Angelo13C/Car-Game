@@ -8,15 +8,6 @@ using Unity.Transforms;
 public partial struct PinSystem : ISystem
 {
     [BurstCompile]
-    public void OnCreate(ref SystemState state)
-    {
-    }
-    [BurstCompile]
-    public void OnDestroy(ref SystemState state)
-    {
-    }
-
-    [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
         foreach(var (pin, transform) in SystemAPI.Query<Pin, TransformAspect>())

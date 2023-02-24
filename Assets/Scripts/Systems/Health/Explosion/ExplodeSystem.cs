@@ -25,11 +25,6 @@ public partial struct ExplodeSystem : ISystem
     }
     
     [BurstCompile]
-    public void OnDestroy(ref SystemState state)
-    {
-    }
-
-    [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
         _physicsVelocityLookup.Update(ref state);

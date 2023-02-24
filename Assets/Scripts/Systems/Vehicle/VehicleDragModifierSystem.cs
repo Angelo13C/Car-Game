@@ -7,15 +7,6 @@ using Unity.Physics;
 public partial struct VehicleDragModifierSystem : ISystem
 {
     [BurstCompile]
-    public void OnCreate(ref SystemState state)
-    {
-    }
-    [BurstCompile]
-    public void OnDestroy(ref SystemState state)
-    {
-    }
-
-    [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
         foreach(var (vehicleMover, dragModifier, suspensions, physicsDamping, velocity) in SystemAPI.Query<VehicleMover, VehicleDragModifier, Suspensions, RefRW<PhysicsDamping>, PhysicsVelocity>())

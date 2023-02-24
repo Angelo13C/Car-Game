@@ -10,15 +10,6 @@ using Unity.Physics.Systems;
 public partial struct SuspensionsSystem : ISystem
 {
     [BurstCompile]
-    public void OnCreate(ref SystemState state)
-    {
-    }
-    [BurstCompile]
-    public void OnDestroy(ref SystemState state)
-    {
-    }
-
-    [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
         var physicsWorld = SystemAPI.GetSingleton<PhysicsWorldSingleton>();

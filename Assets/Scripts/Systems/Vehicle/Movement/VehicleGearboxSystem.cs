@@ -8,15 +8,6 @@ using Unity.Physics;
 public partial struct VehicleGearboxSystem : ISystem
 {
     [BurstCompile]
-    public void OnCreate(ref SystemState state)
-    {
-    }
-    [BurstCompile]
-    public void OnDestroy(ref SystemState state)
-    {
-    }
-
-    [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
         foreach(var (vehicleGearbox, vehicleMover, velocity) in SystemAPI.Query<DynamicBuffer<VehicleGear>, RefRW<VehicleMover>, PhysicsVelocity>())

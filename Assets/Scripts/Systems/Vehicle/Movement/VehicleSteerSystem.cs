@@ -8,16 +8,7 @@ using Unity.Transforms;
 [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
 [BurstCompile]
 public partial struct VehicleSteerSystem : ISystem
-{
-    [BurstCompile]
-    public void OnCreate(ref SystemState state)
-    {
-    }
-    [BurstCompile]
-    public void OnDestroy(ref SystemState state)
-    {
-    }
-    [BurstCompile]
+{    [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
         var deltaTime = SystemAPI.Time.DeltaTime;

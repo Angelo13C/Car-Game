@@ -11,15 +11,6 @@ using Unity.Transforms;
 public partial struct WheelsRotationSystem : ISystem
 {
     [BurstCompile]
-    public void OnCreate(ref SystemState state)
-    {
-    }
-    [BurstCompile]
-    public void OnDestroy(ref SystemState state)
-    {
-    }
-
-    [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
         foreach(var (wheels, wheelsEntity) in SystemAPI.Query<Wheels>().WithEntityAccess())

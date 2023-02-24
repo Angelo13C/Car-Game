@@ -6,15 +6,6 @@ using UnityEngine;
 public partial struct VehicleInputMoverSystem : ISystem
 {
     [BurstCompile]
-    public void OnCreate(ref SystemState state)
-    {
-    }
-    [BurstCompile]
-    public void OnDestroy(ref SystemState state)
-    {
-    }
-
-    [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
         foreach(var (vehicleMover, vehicleInputMover) in SystemAPI.Query<RefRW<VehicleMover>, RefRO<VehicleInputMover>>())

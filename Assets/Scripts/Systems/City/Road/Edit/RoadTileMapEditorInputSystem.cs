@@ -6,15 +6,6 @@ using UnityEngine;
 [BurstCompile]
 public partial struct RoadTileMapEditorInputSystem : ISystem
 {
-    [BurstCompile]
-    public void OnCreate(ref SystemState state)
-    {
-    }
-    [BurstCompile]
-    public void OnDestroy(ref SystemState state)
-    {
-    }
-
     public void OnUpdate(ref SystemState state)
     {
         if(Input.GetMouseButtonDown(0))

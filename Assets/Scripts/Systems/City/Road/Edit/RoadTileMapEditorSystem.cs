@@ -8,15 +8,6 @@ using Unity.Physics;
 public partial struct RoadTileMapEditorSystem : ISystem
 {
     [BurstCompile]
-    public void OnCreate(ref SystemState state)
-    {
-    }
-    [BurstCompile]
-    public void OnDestroy(ref SystemState state)
-    {
-    }
-
-    [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
         var physicsWorld = SystemAPI.GetSingleton<PhysicsWorldSingleton>();
