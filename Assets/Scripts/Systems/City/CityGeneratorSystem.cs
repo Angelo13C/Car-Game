@@ -26,7 +26,7 @@ public partial struct CityGeneratorSystem : ISystem, ISystemStartStop
 
     public void OnUpdate(ref SystemState state)
     {
-        foreach(var (cityGenerator, placeableObjects) in SystemAPI.Query<CityGenerator, DynamicBuffer<CityPlaceableObject>>())
+        foreach(var (cityGenerator, placeableObjects, entity) in SystemAPI.Query<CityGenerator, DynamicBuffer<CityPlaceableObject>>().WithEntityAccess())
         {
             if(cityGenerator.Generate)
             {
@@ -36,8 +36,8 @@ public partial struct CityGeneratorSystem : ISystem, ISystemStartStop
 
                 var entityCommandBuffer = _entityCommandBufferSystem.ValueRW.CreateCommandBuffer(state.WorldUnmanaged);
                 var job = new GenerateCityJob(cityGenerator.InputImage, new Grid(cityGenerator.CitySize), cityGenerator.Seed, 
-                    cityGenerator.N, cityGenerator.CellSize, cityGenerator.StreetColor, cityGenerator.StreetsPrefabs, entityCommandBuffer, 
-                    placeableObjects.ToNativeArray(Allocator.TempJob),
+                    cityGenerator.N, cityGenerator.CellSize, cityGenerator.StreetColor, cityGenerator.StreetsPrefabs, entity, 
+                    entityCommandBuffer, placeableObjects.ToNativeArray(Allocator.TempJob),
                     _localTransformLookup);
                 state.Dependency = job.Schedule();
                 job.Dispose(state.Dependency);
@@ -54,19 +54,23 @@ public struct GenerateCityJob : IJob, IDisposable, INativeDisposable
     private Color32 _streetColor;
     private EntityCommandBuffer _entityCommandBuffer;
     private NativeArray<CityPlaceableObject> _placeableObjects;
-    public StreetsPrefabs _streetsPrefabs;
-	public float2 _cellSize;
+    private Entity _cityGeneratorEntity;
+    private StreetsPrefabs _streetsPrefabs;
+    private NativeArray<bool> _streets;
+	private float2 _cellSize;
     private uint _seed;
     
     [ReadOnly] private ComponentLookup<LocalTransform> _localTransformLookup;
 
-    public GenerateCityJob(Texture2D image, Grid outputGrid, uint seed, int n, float2 cellSize, Color32 roadColor, StreetsPrefabs streetsPrefabs, EntityCommandBuffer entityCommandBuffer, NativeArray<CityPlaceableObject> placeableObjects, ComponentLookup<LocalTransform> localTransformLookup)
+    public GenerateCityJob(Texture2D image, Grid outputGrid, uint seed, int n, float2 cellSize, Color32 roadColor, StreetsPrefabs streetsPrefabs, Entity cityGeneratorEntity, EntityCommandBuffer entityCommandBuffer, NativeArray<CityPlaceableObject> placeableObjects, ComponentLookup<LocalTransform> localTransformLookup)
     {
         _waveFunctionCollapseJob = new WaveFunctionCollapseJob(image, outputGrid, seed, n, Allocator.TempJob);
+        _streets = new NativeArray<bool>(_waveFunctionCollapseJob.CollapsedResult.Length, Allocator.Persistent);
         _streetColor = roadColor;
         _seed = seed;
         _cellSize = cellSize;
         _streetsPrefabs = streetsPrefabs;
+        _cityGeneratorEntity = cityGeneratorEntity;
         _entityCommandBuffer = entityCommandBuffer;
         _placeableObjects = placeableObjects;
         _localTransformLookup = localTransformLookup;
@@ -80,7 +84,7 @@ public struct GenerateCityJob : IJob, IDisposable, INativeDisposable
         if(_waveFunctionCollapseJob.Error)
             return;
         
-        var streets = new NativeArray<bool>(_waveFunctionCollapseJob.CollapsedResult.Length, Allocator.Temp);
+        var streets = _streets;
         for(var i = 0; i < streets.Length; i++)
         {            
             var cellSuperposition = _waveFunctionCollapseJob.CollapsedResult[i].SuperPosition;
@@ -88,6 +92,11 @@ public struct GenerateCityJob : IJob, IDisposable, INativeDisposable
             var cellColor = _waveFunctionCollapseJob.PatternIdByColorResult[cellIndex].Color;
             streets[i] = cellColor == _streetColor;
         }
+        var streetNetwork = new StreetNetwork {
+            Streets = streets
+        };
+        
+        _entityCommandBuffer.AddComponent(_cityGeneratorEntity, streetNetwork);
         
         var rng = new Unity.Mathematics.Random(_seed);
         var grid = _waveFunctionCollapseJob.OutputGrid;
