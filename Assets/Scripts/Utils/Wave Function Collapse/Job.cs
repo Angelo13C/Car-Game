@@ -3,9 +3,10 @@ using Unity.Collections;
 using static ImagePatternSetCreator;
 using UnityEngine;
 using Unity.Burst;
+using System;
 
 [BurstCompile]
-public struct WaveFunctionCollapseJob : IJob
+public struct WaveFunctionCollapseJob : IJob, IDisposable, INativeDisposable
 {
     [ReadOnly] public NativeArray<ColorRGB> InputImage;
     [ReadOnly] public Grid InputImageGrid;
@@ -28,7 +29,20 @@ public struct WaveFunctionCollapseJob : IJob
         CollapsedResult = new NativeArray<Cell>(OutputGrid.Area, resultAllocation, NativeArrayOptions.UninitializedMemory);
         PatternIdByColorResult = new NativeList<PatternIdAndColor>(resultAllocation);
     }
-    
+
+    public void Dispose()
+    {
+        CollapsedResult.Dispose();
+        PatternIdByColorResult.Dispose();
+    }
+
+    public JobHandle Dispose(JobHandle inputDeps)
+    {
+        CollapsedResult.Dispose(inputDeps);
+        PatternIdByColorResult.Dispose(inputDeps);
+        return inputDeps;
+    }
+
     [BurstCompile]
     public void Execute()
     {

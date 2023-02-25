@@ -34,7 +34,7 @@ public struct ImagePatternSetCreator
         _image = image;
     }
 
-    public struct ColorRGB : IEquatable<ColorRGB>
+    public struct ColorRGB : IEquatable<ColorRGB>, IEquatable<Color32>
     {
         public byte R;
         public byte G;
@@ -48,6 +48,10 @@ public struct ImagePatternSetCreator
 
         public static implicit operator Color32(ColorRGB color) => new Color32(color.R, color.G, color.B, byte.MaxValue);
         public bool Equals(ColorRGB other) => R == other.R && G == other.G && B == other.B;
+        public bool Equals(Color32 other) => R == other.r && G == other.g && B == other.b;
+        
+        public static bool operator ==(ColorRGB colorA, Color32 colorB) => colorA.Equals(colorB);
+        public static bool operator !=(ColorRGB colorA, Color32 colorB) => !colorA.Equals(colorB);
     }
 
     [BurstCompile]

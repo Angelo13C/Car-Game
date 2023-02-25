@@ -12,6 +12,10 @@ public class CityGeneratorAuthoring : MonoBehaviour
 {
     [SerializeField] private Texture2D _inputCityImage;
 	public Texture2D InputCityImage => _inputCityImage;
+	
+	[SerializeField] private Vector2Int _roadCellPosition;
+
+	[SerializeField] private Vector2 _cellSize = new Vector2(5, 5);
 
 	[SerializeField] private Vector2Int _citySize = new Vector2Int(50, 50);
 	public Vector2Int CitySize => _citySize;
@@ -20,18 +24,43 @@ public class CityGeneratorAuthoring : MonoBehaviour
 
 	[Min(1)] public uint Seed = 1;
 
+	[System.Serializable]
+	private struct CityPlaceableObjectAuthoring
+	{
+		public GameObject Prefab;
+		public Vector2Int Size;
+		public CityObjectType Type;
+	}
+	[SerializeField] private CityPlaceableObjectAuthoring[] _cityPlaceableObject;
+
 	class Baker : Baker<CityGeneratorAuthoring>
 	{
 		public override void Bake(CityGeneratorAuthoring authoring)
 		{
+			var roadColor = authoring._inputCityImage.GetPixel(authoring._roadCellPosition.x, authoring._roadCellPosition.y);
             var cityGenerator = new CityGenerator {
                 InputImage = authoring._inputCityImage,
+				CellSize = authoring._cellSize,
 				CitySize = new int2(authoring.CitySize.x, authoring.CitySize.y),
 				Seed = authoring.Seed,
+				N = authoring.N,
+				RoadColor = roadColor,
                 Generate = true,
             };
 
 			AddComponentObject(cityGenerator);
+
+			var cityPlaceableObjects = AddBuffer<CityPlaceableObject>();
+			cityPlaceableObjects.ResizeUninitialized(authoring._cityPlaceableObject.Length);
+			for(var i = 0; i < authoring._cityPlaceableObject.Length; i++)
+			{
+				var currentObject = authoring._cityPlaceableObject[i];
+				cityPlaceableObjects[i] = new CityPlaceableObject {
+					Prefab = GetEntity(currentObject.Prefab),
+					Size = new int2(currentObject.Size.x, currentObject.Size.y),
+					Type = currentObject.Type
+				};
+			}
 		}
 	}
 }

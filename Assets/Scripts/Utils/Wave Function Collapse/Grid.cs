@@ -11,6 +11,10 @@ public struct Grid
     {
         Size = new int2(width, height);
     }
+    public Grid(int2 size)
+    {
+        Size = size;
+    }
     
     [BurstCompile]
     public int GridPositionToIndex(int2 gridPosition)
