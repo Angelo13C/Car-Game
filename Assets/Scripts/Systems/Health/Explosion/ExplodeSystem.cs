@@ -86,17 +86,20 @@ public partial struct ExplodeSystem : ISystem
                 {
                     if(!alreadyHitRigidbodies.GetSubArray(0, alreadyHitRigidbodiesIndex).Contains(hit.RigidBodyIndex))
                     {
-                        alreadyHitRigidbodies[alreadyHitRigidbodiesIndex] = hit.RigidBodyIndex;
-                        alreadyHitRigidbodiesIndex++;
+                        if(PhysicsVelocityLookup.HasComponent(hit.Entity))
+                        {
+                            alreadyHitRigidbodies[alreadyHitRigidbodiesIndex] = hit.RigidBodyIndex;
+                            alreadyHitRigidbodiesIndex++;
 
-                        var hitVelocity = PhysicsVelocityLookup.GetRefRW(hit.Entity, false);
-                        var hitMass = PhysicsMassLookup.GetRefRO(hit.Entity);
-                        var hitCollider = PhysicsColliderLookup.GetRefRO(hit.Entity);
-                        
-                        var hitBody = CollisionWorld.Bodies[hit.RigidBodyIndex];
-                        hitVelocity.ValueRW.ApplyExplosionForce(hitMass.ValueRO, hitCollider.ValueRO, hitBody.WorldFromBody.pos, 
-                            hitBody.WorldFromBody.rot, hitBody.Scale, Explosion.Config.Force, ExplosionPosition,
-                            Explosion.Config.Radius, FixedDeltaTime, up, collisionFilter, 0, ForceMode.Impulse);
+                            var hitVelocity = PhysicsVelocityLookup.GetRefRW(hit.Entity, false);
+                            var hitMass = PhysicsMassLookup.GetRefRO(hit.Entity);
+                            var hitCollider = PhysicsColliderLookup.GetRefRO(hit.Entity);
+                            
+                            var hitBody = CollisionWorld.Bodies[hit.RigidBodyIndex];
+                            hitVelocity.ValueRW.ApplyExplosionForce(hitMass.ValueRO, hitCollider.ValueRO, hitBody.WorldFromBody.pos, 
+                                hitBody.WorldFromBody.rot, hitBody.Scale, Explosion.Config.Force, ExplosionPosition,
+                                Explosion.Config.Radius, FixedDeltaTime, up, collisionFilter, 0, ForceMode.Impulse);
+                        }
                     }
                 }
 
