@@ -1561,16 +1561,22 @@ MonoBehaviour:
   _citySize: {x: 40, y: 40}
   N: 2
   Seed: 2
+  _straightStreetPrefab: {fileID: 6654219816157694446, guid: c8a426511197a524a9bf2b95dddef265,
+    type: 3}
+  _deadEndStreetPrefab: {fileID: 5857730661786638987, guid: ece6a915b61ab0a41aae8ca3693ef89c,
+    type: 3}
+  _crossStreetPrefab: {fileID: 1413964092571259303, guid: f49d94650f494214da682d4ab873d51f,
+    type: 3}
+  _intersectionStreetPrefab: {fileID: 2296493162508366763, guid: 1288f12a112992c44b58804d5d634bda,
+    type: 3}
+  _curveStreetPrefab: {fileID: 9005742534075086627, guid: ed7ce4d1692477444b87b849068c7992,
+    type: 3}
   _cityPlaceableObject:
-  - Prefab: {fileID: 6654219816157694446, guid: c8a426511197a524a9bf2b95dddef265,
+  - Prefab: {fileID: 2291612839669990776, guid: 24ffa2b6b7b9ca7438bbe91547e790ed,
       type: 3}
     Size: {x: 1, y: 1}
     Type: 0
   - Prefab: {fileID: 6313943751462923879, guid: 70ec48997c5f2b748a41d93054ab0deb,
       type: 3}
     Size: {x: 1, y: 1}
-    Type: 1
-  - Prefab: {fileID: 2291612839669990776, guid: 24ffa2b6b7b9ca7438bbe91547e790ed,
-      type: 3}
-    Size: {x: 1, y: 1}
-    Type: 1
+    Type: 0

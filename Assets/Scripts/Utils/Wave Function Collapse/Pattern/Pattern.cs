@@ -135,6 +135,18 @@ public static class DirectionExtensions
             default: return new int2(-1, 0);
         }
     }
+    
+    [BurstCompile]
+    public static float ToAngle(this Direction direction)
+    {
+        switch(direction)
+        {
+            case Direction.Up: return math.PI / 2;
+            case Direction.Right: return 0;
+            case Direction.Down: return math.PI * 3 / 2;
+            default: return math.PI;
+        }
+    }
 }
 
 [BurstCompile]

@@ -11,9 +11,20 @@ public class CityGenerator : IComponentData
 	public uint Seed;
 	public int N;
 
-	public Color32 RoadColor;
+	public Color32 StreetColor;
+
+	public StreetsPrefabs StreetsPrefabs;
 
     public bool Generate;
+}
+
+public struct StreetsPrefabs
+{
+	public Entity StraightStreetPrefab;
+	public Entity DeadEndStreetPrefab;
+	public Entity CrossStreetPrefab;
+	public Entity IntersectionStreetPrefab;
+	public Entity CurveStreetPrefab;
 }
 
 [InternalBufferCapacity(30)]
@@ -26,6 +37,5 @@ public struct CityPlaceableObject : IBufferElementData
 
 public enum CityObjectType
 {
-	StraightRoad,
-	Building
+	House
 }

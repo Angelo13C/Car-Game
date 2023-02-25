@@ -23,6 +23,13 @@ public class CityGeneratorAuthoring : MonoBehaviour
 	[Range(1, 5)] public int N = 1;
 
 	[Min(1)] public uint Seed = 1;
+	
+	[Header("Streets")]
+	[SerializeField] private GameObject _straightStreetPrefab;
+	[SerializeField] private GameObject _deadEndStreetPrefab;
+	[SerializeField] private GameObject _crossStreetPrefab;
+	[SerializeField] private GameObject _intersectionStreetPrefab;
+	[SerializeField] private GameObject _curveStreetPrefab;
 
 	[System.Serializable]
 	private struct CityPlaceableObjectAuthoring
@@ -31,20 +38,28 @@ public class CityGeneratorAuthoring : MonoBehaviour
 		public Vector2Int Size;
 		public CityObjectType Type;
 	}
+	[Header("Buildings")]
 	[SerializeField] private CityPlaceableObjectAuthoring[] _cityPlaceableObject;
 
 	class Baker : Baker<CityGeneratorAuthoring>
 	{
 		public override void Bake(CityGeneratorAuthoring authoring)
 		{
-			var roadColor = authoring._inputCityImage.GetPixel(authoring._roadCellPosition.x, authoring._roadCellPosition.y);
+			var streetColor = authoring._inputCityImage.GetPixel(authoring._roadCellPosition.x, authoring._roadCellPosition.y);
             var cityGenerator = new CityGenerator {
                 InputImage = authoring._inputCityImage,
 				CellSize = authoring._cellSize,
 				CitySize = new int2(authoring.CitySize.x, authoring.CitySize.y),
 				Seed = authoring.Seed,
 				N = authoring.N,
-				RoadColor = roadColor,
+				StreetColor = streetColor,
+				StreetsPrefabs = new StreetsPrefabs {
+					StraightStreetPrefab = GetEntity(authoring._straightStreetPrefab),
+					DeadEndStreetPrefab = GetEntity(authoring._deadEndStreetPrefab),
+					CrossStreetPrefab = GetEntity(authoring._crossStreetPrefab),
+					IntersectionStreetPrefab = GetEntity(authoring._intersectionStreetPrefab),
+					CurveStreetPrefab = GetEntity(authoring._curveStreetPrefab),
+				},
                 Generate = true,
             };
 
