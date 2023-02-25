@@ -1558,7 +1558,7 @@ MonoBehaviour:
   _inputCityImage: {fileID: 2800000, guid: 694d34c6eeef88543986cf9693120852, type: 3}
   _roadCellPosition: {x: 1, y: 1}
   _cellSize: {x: 12, y: 12}
-  _citySize: {x: 40, y: 40}
+  _citySize: {x: 50, y: 50}
   N: 2
   Seed: 2
   _straightStreetPrefab: {fileID: 6654219816157694446, guid: c8a426511197a524a9bf2b95dddef265,
