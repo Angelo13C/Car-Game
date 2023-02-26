@@ -12,7 +12,7 @@ public partial struct ExplodeOnDeathSystem : ISystem
     public void OnUpdate(ref SystemState state)
     {
         var entityCommandBuffer = new EntityCommandBuffer(Allocator.Temp);
-        foreach(var (explosive, transform) in SystemAPI.Query<Explosive, TransformAspect>().WithAll<Dead>())
+        foreach(var (explosive, transform) in SystemAPI.Query<Explosive, TransformAspect>().WithAll<Dead, ExplodeOnDeath>())
         {
             explosive.Explode(entityCommandBuffer, transform.WorldPosition);
         }
