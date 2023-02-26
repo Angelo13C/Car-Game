@@ -34,7 +34,7 @@ public partial struct ExplodeSystem : ISystem
                     PhysicsMassLookup = SystemAPI.GetComponentLookup<PhysicsMass>(true),
                 }.Schedule(state.Dependency);
                 
-                state.Dependency = JobHandle.CombineDependencies(state.Dependency, explodeForceJobHandle);
+                state.Dependency = explodeForceJobHandle;
             }
         }
     }
