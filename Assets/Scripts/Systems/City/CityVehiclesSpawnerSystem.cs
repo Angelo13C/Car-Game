@@ -28,6 +28,7 @@ public partial struct CityVehiclesSpawnerSystem : ISystem
                 var entityCommandBuffer = entityCommandBufferSingleton.CreateCommandBuffer(state.WorldUnmanaged);
 
                 var transform = SystemAPI.GetComponent<LocalTransform>(vehiclesSpawner.VehiclePrefab);
+                var vehicleDefaultDirection = Direction.Up.ToAngle();
                 var rng = new Random((uint) (SystemAPI.Time.ElapsedTime * 10000));
                 for(var i = 0; i < vehiclesToSpawn; i++)
                 {
@@ -41,8 +42,18 @@ public partial struct CityVehiclesSpawnerSystem : ISystem
 
                     var cellGridPosition = streetNetwork.Grid.IndexToGridPosition(cellIndex);
                     var cellPosition = new float2(cellGridPosition.x * streetNetwork.StreetTileSize.x, cellGridPosition.y * streetNetwork.StreetTileSize.y);
-                    transform.Position = new float3(cellPosition.x, 0, cellPosition.y);
-                    entityCommandBuffer.SetComponent(spawnedVehicle, transform);
+
+                    var direction = Direction.Up;
+                    if(streetNetwork.IsStreet(cellGridPosition + new int2(1, 0), streetsTiles))
+                        direction = Direction.Right;
+                    else if(streetNetwork.IsStreet(cellGridPosition + new int2(0, -1), streetsTiles))
+                        direction = Direction.Down;
+                    else if(streetNetwork.IsStreet(cellGridPosition + new int2(-1, 0), streetsTiles))
+                        direction = Direction.Left;
+
+                    var spawnedTransform = transform;
+                    spawnedTransform.Position = new float3(cellPosition.x, 0, cellPosition.y);
+                    entityCommandBuffer.SetComponent(spawnedVehicle, spawnedTransform.RotateY(direction.ToAngle() - vehicleDefaultDirection));
                 }
             }
         }
