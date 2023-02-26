@@ -11,26 +11,10 @@ using Unity.Transforms;
 [UpdateInGroup(typeof(AfterPhysicsSystemGroup))]
 [BurstCompile]
 public partial struct ExplodeSystem : ISystem
-{
-    private ComponentLookup<PhysicsVelocity> _physicsVelocityLookup;
-    [ReadOnly] private ComponentLookup<PhysicsMass> _physicsMassLookup;
-    [ReadOnly] private ComponentLookup<PhysicsCollider> _physicsColliderLookup;
-
-    [BurstCompile]
-    public void OnCreate(ref SystemState state)
-    {
-        _physicsVelocityLookup = SystemAPI.GetComponentLookup<PhysicsVelocity>(false);
-        _physicsMassLookup = SystemAPI.GetComponentLookup<PhysicsMass>(true);
-        _physicsColliderLookup = SystemAPI.GetComponentLookup<PhysicsCollider>(true);
-    }
-    
+{    
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        _physicsVelocityLookup.Update(ref state);
-        _physicsMassLookup.Update(ref state);
-        _physicsColliderLookup.Update(ref state);
-
         var physicsWorld = SystemAPI.GetSingleton<PhysicsWorldSingleton>();
         var fixedDeltaTime = SystemAPI.Time.DeltaTime;
         foreach(var (explosion, transform) in SystemAPI.Query<RefRW<Explosion>, LocalTransform>())
@@ -45,9 +29,9 @@ public partial struct ExplodeSystem : ISystem
                     Explosion = explosion.ValueRO,
                     ExplosionPosition = transform.Position,
                     FixedDeltaTime = fixedDeltaTime,
-                    PhysicsVelocityLookup = _physicsVelocityLookup,
-                    PhysicsColliderLookup = _physicsColliderLookup,
-                    PhysicsMassLookup = _physicsMassLookup,
+                    PhysicsVelocityLookup = SystemAPI.GetComponentLookup<PhysicsVelocity>(false),
+                    PhysicsColliderLookup = SystemAPI.GetComponentLookup<PhysicsCollider>(true),
+                    PhysicsMassLookup = SystemAPI.GetComponentLookup<PhysicsMass>(true),
                 }.Schedule(state.Dependency);
                 
                 state.Dependency = JobHandle.CombineDependencies(state.Dependency, explodeForceJobHandle);
