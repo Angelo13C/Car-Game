@@ -8,22 +8,8 @@ using Unity.Transforms;
 using UnityEngine;
 
 [BurstCompile]
-public partial struct CityGeneratorSystem : ISystem, ISystemStartStop
+public partial struct CityGeneratorSystem : ISystem
 {
-    private RefRW<BeginSimulationEntityCommandBufferSystem.Singleton> _entityCommandBufferSystem;
-    [ReadOnly] private ComponentLookup<LocalTransform> _localTransformLookup;
-
-    [BurstCompile]
-    public void OnStartRunning(ref SystemState state)
-    {
-        _localTransformLookup = SystemAPI.GetComponentLookup<LocalTransform>(false);
-        _entityCommandBufferSystem = SystemAPI.GetSingletonRW<BeginSimulationEntityCommandBufferSystem.Singleton>();
-    }
-
-    public void OnStopRunning(ref SystemState state)
-    {
-    }
-
     public void OnUpdate(ref SystemState state)
     {
         foreach(var (cityGenerator, placeableObjects, entity) in SystemAPI.Query<CityGenerator, DynamicBuffer<CityPlaceableObject>>().WithEntityAccess())
@@ -31,14 +17,13 @@ public partial struct CityGeneratorSystem : ISystem, ISystemStartStop
             if(cityGenerator.Generate)
             {
                 cityGenerator.Generate = false;
-                
-                _localTransformLookup.Update(ref state);
-
-                var entityCommandBuffer = _entityCommandBufferSystem.ValueRW.CreateCommandBuffer(state.WorldUnmanaged);
+                    
+                var entityCommandBufferSystem = SystemAPI.GetSingletonRW<BeginSimulationEntityCommandBufferSystem.Singleton>();
+                var entityCommandBuffer = entityCommandBufferSystem.ValueRW.CreateCommandBuffer(state.WorldUnmanaged);
                 var job = new GenerateCityJob(cityGenerator.InputImage, new Grid(cityGenerator.CitySize), cityGenerator.Seed, 
                     cityGenerator.N, cityGenerator.CellSize, cityGenerator.StreetColor, cityGenerator.StreetsPrefabs, entity, 
                     entityCommandBuffer, placeableObjects.ToNativeArray(Allocator.TempJob),
-                    _localTransformLookup);
+                    SystemAPI.GetComponentLookup<LocalTransform>(true));
                 state.Dependency = job.Schedule();
                 job.Dispose(state.Dependency);
             }
@@ -56,7 +41,6 @@ public struct GenerateCityJob : IJob, IDisposable, INativeDisposable
     private NativeArray<CityPlaceableObject> _placeableObjects;
     private Entity _cityGeneratorEntity;
     private StreetsPrefabs _streetsPrefabs;
-    private NativeArray<bool> _streets;
 	private float2 _cellSize;
     private uint _seed;
     
@@ -65,7 +49,6 @@ public struct GenerateCityJob : IJob, IDisposable, INativeDisposable
     public GenerateCityJob(Texture2D image, Grid outputGrid, uint seed, int n, float2 cellSize, Color32 roadColor, StreetsPrefabs streetsPrefabs, Entity cityGeneratorEntity, EntityCommandBuffer entityCommandBuffer, NativeArray<CityPlaceableObject> placeableObjects, ComponentLookup<LocalTransform> localTransformLookup)
     {
         _waveFunctionCollapseJob = new WaveFunctionCollapseJob(image, outputGrid, seed, n, Allocator.TempJob);
-        _streets = new NativeArray<bool>(_waveFunctionCollapseJob.CollapsedResult.Length, Allocator.Persistent);
         _streetColor = roadColor;
         _seed = seed;
         _cellSize = cellSize;
@@ -83,34 +66,31 @@ public struct GenerateCityJob : IJob, IDisposable, INativeDisposable
 
         if(_waveFunctionCollapseJob.Error)
             return;
+            
+        var grid = _waveFunctionCollapseJob.OutputGrid;
         
-        var streets = _streets;
+        var streets = _entityCommandBuffer.AddBuffer<StreetTile>(_cityGeneratorEntity);
+        streets.ResizeUninitialized(grid.Area);
         for(var i = 0; i < streets.Length; i++)
         {            
             var cellSuperposition = _waveFunctionCollapseJob.CollapsedResult[i].SuperPosition;
             var cellIndex = _waveFunctionCollapseJob.PatternIdByColorResult.IndexOf(new PatternId(cellSuperposition));
             var cellColor = _waveFunctionCollapseJob.PatternIdByColorResult[cellIndex].Color;
-            streets[i] = cellColor == _streetColor;
+            streets[i] = new StreetTile { IsStreet = cellColor == _streetColor };
         }
-        var streetNetwork = new StreetNetwork {
-            Streets = streets
-        };
-        
-        _entityCommandBuffer.AddComponent(_cityGeneratorEntity, streetNetwork);
         
         var rng = new Unity.Mathematics.Random(_seed);
-        var grid = _waveFunctionCollapseJob.OutputGrid;
         var housesObjects = _placeableObjects.GetSubArray(0, 2);
         for(var i = 0; i < _waveFunctionCollapseJob.CollapsedResult.Length; i++)
         {
             var cellGridPosition = grid.IndexToGridPosition(i);
             var cellPosition = new float2(cellGridPosition.x * _cellSize.x, cellGridPosition.y * _cellSize.y);
             var entityToSpawn = new ObjectSpawnData(Entity.Null, Direction.Down);
-            if(streets[i])
+            if(streets[i].IsStreet)
             {
                 var adjacency = Adjacency.Empty;
 
-                bool IsStreet(int2 gridPosition, int2 offset) => grid.IsGridPositionValid(gridPosition + offset) && streets[grid.GridPositionToIndex(gridPosition + offset)];
+                bool IsStreet(int2 gridPosition, int2 offset) => grid.IsGridPositionValid(gridPosition + offset) && streets[grid.GridPositionToIndex(gridPosition + offset)].IsStreet;
                 
                 if(IsStreet(cellGridPosition, new int2(1, 0)))
                     adjacency |= Adjacency.Right;

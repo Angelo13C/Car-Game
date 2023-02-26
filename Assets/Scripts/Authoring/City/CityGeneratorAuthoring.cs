@@ -63,6 +63,12 @@ public class CityGeneratorAuthoring : MonoBehaviour
                 Generate = true,
             };
 
+			var streetNetwork = new StreetNetwork {
+				Grid = new Grid(cityGenerator.CitySize),
+				StreetTileSize = cityGenerator.CellSize
+			};
+			AddComponent(streetNetwork);
+
 			AddComponentObject(cityGenerator);
 
 			var cityPlaceableObjects = AddBuffer<CityPlaceableObject>();

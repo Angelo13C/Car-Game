@@ -62,7 +62,7 @@ VisualEffect:
       - m_Value: 16
         m_Name: Spawn Rate
         m_Overridden: 1
-      - m_Value: 16
+      - m_Value: 0
         m_Name: SpawnRate
         m_Overridden: 1
     m_Int:
@@ -213,7 +213,7 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2391579585950865736, guid: b755001173cdf444ea62c203c6b67e18,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 4408836889661584111}
+      addedObject: {fileID: 5164413484456416724}
     - targetCorrespondingSourceObject: {fileID: 2391579585950865736, guid: b755001173cdf444ea62c203c6b67e18,
         type: 3}
       insertIndex: -1
@@ -301,7 +301,7 @@ MonoBehaviour:
     Category31: 0
   _explosionPrefab: {fileID: 4413985449356472043, guid: a7fd7f18346c31549b0ea2fa4662a305,
     type: 3}
---- !u!114 &4408836889661584111
+--- !u!114 &5164413484456416724
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
