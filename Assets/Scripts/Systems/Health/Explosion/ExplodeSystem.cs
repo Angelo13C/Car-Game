@@ -48,9 +48,9 @@ public partial struct ExplodeSystem : ISystem
                     PhysicsVelocityLookup = _physicsVelocityLookup,
                     PhysicsColliderLookup = _physicsColliderLookup,
                     PhysicsMassLookup = _physicsMassLookup,
-                }.Schedule();
+                }.Schedule(state.Dependency);
                 
-                state.Dependency = explodeForceJobHandle;
+                state.Dependency = JobHandle.CombineDependencies(state.Dependency, explodeForceJobHandle);
             }
         }
     }
