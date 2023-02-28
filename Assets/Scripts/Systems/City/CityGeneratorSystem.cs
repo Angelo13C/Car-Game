@@ -167,15 +167,6 @@ public struct GenerateCityJob : IJob, IDisposable, INativeDisposable
     }
 }
 
-public enum Adjacency
-{
-    Empty = 0,
-    Up = (1 << 0),
-    Right = (1 << 1),
-    Down = (1 << 2),
-    Left = (1 << 3)
-}
-
 public struct ObjectSpawnData
 {
     public Entity Prefab;
