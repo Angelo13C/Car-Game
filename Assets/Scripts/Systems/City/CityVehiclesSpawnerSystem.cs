@@ -28,6 +28,7 @@ public partial struct CityVehiclesSpawnerSystem : ISystem
                 var entityCommandBuffer = entityCommandBufferSingleton.CreateCommandBuffer(state.WorldUnmanaged);
 
                 var transform = SystemAPI.GetComponent<LocalTransform>(vehiclesSpawner.VehiclePrefab);
+                var vehicleAISteer = SystemAPI.GetComponent<VehicleAISteer>(vehiclesSpawner.VehiclePrefab);
                 var vehicleDefaultDirection = Direction.Up.ToAngle();
                 var rng = new Random((uint) (SystemAPI.Time.ElapsedTime * 10000));
                 for(var i = 0; i < vehiclesToSpawn; i++)
@@ -53,7 +54,12 @@ public partial struct CityVehiclesSpawnerSystem : ISystem
 
                     var spawnedTransform = transform;
                     spawnedTransform.Position = new float3(cellPosition.x, 0, cellPosition.y);
-                    entityCommandBuffer.SetComponent(spawnedVehicle, spawnedTransform.RotateY(direction.ToAngle() - vehicleDefaultDirection));
+                    spawnedTransform = spawnedTransform.RotateY(direction.ToAngle() - vehicleDefaultDirection);
+                    entityCommandBuffer.SetComponent(spawnedVehicle, spawnedTransform);
+                    entityCommandBuffer.SetComponent(spawnedVehicle, new VehicleAISteer { 
+                        SteerAngleBounds = vehicleAISteer.SteerAngleBounds,
+                        TargetAngle = spawnedTransform.Rotation.ComputeYAngle()
+                    });
                 }
             }
         }
