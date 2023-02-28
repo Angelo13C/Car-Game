@@ -1102,8 +1102,6 @@ MonoBehaviour:
     GasForce: 55000
   - MinSpeed: 90
     GasForce: 80000
-  - MinSpeed: 125
-    GasForce: 100000
 --- !u!114 &-8036978669275149172
 MonoBehaviour:
   m_ObjectHideFlags: 0
