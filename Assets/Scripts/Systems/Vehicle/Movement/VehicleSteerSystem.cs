@@ -15,8 +15,10 @@ public partial struct VehicleSteerSystem : ISystem
         foreach(var (vehicleSteer, suspensions, transform, velocity, mass) in SystemAPI.Query<VehicleSteer, Suspensions, TransformAspect, RefRW<PhysicsVelocity>, PhysicsMass>())
         {
             var suspensionsMultiplier = math.min(suspensions.SuspensionsGroundedCount, 2) / 2f;
+            var currentSpeedMultiplier = math.unlerp(0, vehicleSteer.MinSpeedToFullySteer, VehicleMoverSystem.SpeedOfVehicle(velocity.ValueRO));
+            currentSpeedMultiplier = math.min(1, math.abs(currentSpeedMultiplier));
 
-            var steerForce = transform.Up * vehicleSteer.CurrentSteer * vehicleSteer.Force * suspensionsMultiplier;
+            var steerForce = transform.Up * vehicleSteer.CurrentSteer * vehicleSteer.Force * suspensionsMultiplier * currentSpeedMultiplier;
             mass.GetImpulseFromForce(transform.WorldScale, in steerForce, ForceMode.Force, deltaTime, out var impulse, out var impulseMass);
             velocity.ValueRW.ApplyAngularImpulse(impulseMass, transform.WorldScale, impulse);
         }

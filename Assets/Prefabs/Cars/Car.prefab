@@ -1063,6 +1063,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _steerForce: 8000
+  _minSpeedToFullySteer: 30
 --- !u!114 &3500510116151046609
 MonoBehaviour:
   m_ObjectHideFlags: 0

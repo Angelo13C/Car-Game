@@ -4,6 +4,7 @@ using UnityEngine;
 public class VehicleSteerAuthoring : MonoBehaviour
 {
     [SerializeField] [Range(1000, 50000)] private float _steerForce;
+    [SerializeField] [Range(0, 100)] private int _minSpeedToFullySteer;
 
 	class Baker : Baker<VehicleSteerAuthoring>
 	{
@@ -11,7 +12,8 @@ public class VehicleSteerAuthoring : MonoBehaviour
 		{
 			var vehicleSteer = new VehicleSteer {
 				CurrentSteer = 0,
-				Force = authoring._steerForce
+				Force = authoring._steerForce,
+				MinSpeedToFullySteer = authoring._minSpeedToFullySteer
 			};
 
 			AddComponent(vehicleSteer);
