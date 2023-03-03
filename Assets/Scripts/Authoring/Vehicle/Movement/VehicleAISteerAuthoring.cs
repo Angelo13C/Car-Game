@@ -13,7 +13,8 @@ public class VehicleAISteerAuthoring : MonoBehaviour
 			var angle = authoring.transform.localRotation.eulerAngles.y;
 			var vehicleAISteer = new VehicleAISteer {
 				SteerAngleBounds = math.radians(authoring._steerAngleBounds),
-				TargetAngle = 0,
+				TargetAngle = VehicleAISteer.NO_TARGET_ANGLE,
+				CurrentAngle = authoring.transform.rotation.eulerAngles.y
 			};
 
 			AddComponent(vehicleAISteer);

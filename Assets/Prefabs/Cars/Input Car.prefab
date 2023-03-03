@@ -8,10 +8,15 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1863045726514951684, guid: b755001173cdf444ea62c203c6b67e18,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2391579585950865736, guid: b755001173cdf444ea62c203c6b67e18,
         type: 3}
       propertyPath: m_Name
-      value: Input car
+      value: Input Car
       objectReference: {fileID: 0}
     - target: {fileID: 4039768735002980819, guid: b755001173cdf444ea62c203c6b67e18,
         type: 3}

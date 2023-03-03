@@ -79,12 +79,13 @@ public struct GenerateCityJob : IJob, IDisposable, INativeDisposable
             streets[i] = new StreetTile { IsStreet = cellColor == _streetColor };
         }
         
+        var halfCellSize = _cellSize / 2;
         var rng = new Unity.Mathematics.Random(_seed);
         var housesObjects = _placeableObjects.GetSubArray(0, 2);
         for(var i = 0; i < _waveFunctionCollapseJob.CollapsedResult.Length; i++)
         {
             var cellGridPosition = grid.IndexToGridPosition(i);
-            var cellPosition = new float2(cellGridPosition.x * _cellSize.x, cellGridPosition.y * _cellSize.y);
+            var cellPosition = new float2(cellGridPosition.x * _cellSize.x, cellGridPosition.y * _cellSize.y) + halfCellSize;
             var entityToSpawn = new ObjectSpawnData(Entity.Null, Direction.Down);
             if(streets[i].IsStreet)
             {

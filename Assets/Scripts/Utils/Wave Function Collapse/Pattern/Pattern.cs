@@ -105,10 +105,10 @@ public struct Pattern
 
 public enum Direction
 {
-    Up,
     Right,
+    Up,
+    Left,
     Down,
-    Left
 }
 
 public static class DirectionExtensions

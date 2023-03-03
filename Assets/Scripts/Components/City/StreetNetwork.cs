@@ -5,6 +5,7 @@ public struct StreetNetwork : IComponentData
 {
 	public Grid Grid;
 	public float2 StreetTileSize;
+	public float LaneWidth;
 
 	public int2 PositionToGridPosition(float2 position) => new int2((int) (position.x / StreetTileSize.x), (int) (position.y / StreetTileSize.y));
 	public int PositionToIndex(float2 position) => Grid.GridPositionToIndex(PositionToGridPosition(position));
@@ -32,10 +33,10 @@ public struct StreetNetwork : IComponentData
 public enum Adjacency
 {
     Empty = 0,
-    Up = (1 << 0),
-    Right = (1 << 1),
-    Down = (1 << 2),
-    Left = (1 << 3)
+    Right = (1 << 0),
+    Up = (1 << 1),
+    Left = (1 << 2),
+    Down = (1 << 3),
 }
 
 

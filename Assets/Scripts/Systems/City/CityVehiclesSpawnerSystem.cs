@@ -42,7 +42,8 @@ public partial struct CityVehiclesSpawnerSystem : ISystem
                     } while(!streetsTiles[cellIndex].IsStreet);
 
                     var cellGridPosition = streetNetwork.Grid.IndexToGridPosition(cellIndex);
-                    var cellPosition = new float2(cellGridPosition.x * streetNetwork.StreetTileSize.x, cellGridPosition.y * streetNetwork.StreetTileSize.y);
+                    var cellOffset = new float2(streetNetwork.StreetTileSize.x + streetNetwork.LaneWidth, streetNetwork.StreetTileSize.y) / 2f;
+                    var cellPosition = cellOffset + new float2(cellGridPosition.x * streetNetwork.StreetTileSize.x, cellGridPosition.y * streetNetwork.StreetTileSize.y);
 
                     var direction = Direction.Up;
                     if(streetNetwork.IsStreet(cellGridPosition + new int2(1, 0), streetsTiles))
@@ -54,11 +55,13 @@ public partial struct CityVehiclesSpawnerSystem : ISystem
 
                     var spawnedTransform = transform;
                     spawnedTransform.Position = new float3(cellPosition.x, 0, cellPosition.y);
-                    spawnedTransform = spawnedTransform.RotateY(direction.ToAngle() - vehicleDefaultDirection);
+                    var angle = direction.ToAngle() - vehicleDefaultDirection;
+                    spawnedTransform = spawnedTransform.RotateY(angle);
                     entityCommandBuffer.SetComponent(spawnedVehicle, spawnedTransform);
                     entityCommandBuffer.SetComponent(spawnedVehicle, new VehicleAISteer { 
                         SteerAngleBounds = vehicleAISteer.SteerAngleBounds,
-                        TargetAngle = spawnedTransform.Rotation.ComputeYAngle()
+                        TargetAngle = spawnedTransform.Rotation.ComputeYAngle(),
+                        CurrentAngle = angle
                     });
                 }
             }

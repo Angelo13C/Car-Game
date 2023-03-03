@@ -16,6 +16,7 @@ public class CityGeneratorAuthoring : MonoBehaviour
 	[SerializeField] private Vector2Int _roadCellPosition;
 
 	[SerializeField] private Vector2 _cellSize = new Vector2(5, 5);
+	[SerializeField] [Min(0)] private float _laneWidth;
 
 	[SerializeField] private Vector2Int _citySize = new Vector2Int(50, 50);
 	public Vector2Int CitySize => _citySize;
@@ -65,7 +66,8 @@ public class CityGeneratorAuthoring : MonoBehaviour
 
 			var streetNetwork = new StreetNetwork {
 				Grid = new Grid(cityGenerator.CitySize),
-				StreetTileSize = cityGenerator.CellSize
+				StreetTileSize = cityGenerator.CellSize,
+				LaneWidth = authoring._laneWidth
 			};
 			AddComponent(streetNetwork);
 

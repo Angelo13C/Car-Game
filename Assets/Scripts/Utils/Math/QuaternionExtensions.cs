@@ -26,7 +26,7 @@ public static class QuaternionExtensions
         return math.atan2(siny_cosp, cosy_cosp);
     }
 
-    public static float3 CoputeAngles(this quaternion q)
+    public static float3 ComputeAngles(this quaternion q)
     {
         return new float3(ComputeXAngle(q), ComputeYAngle(q), ComputeZAngle(q));
     }
