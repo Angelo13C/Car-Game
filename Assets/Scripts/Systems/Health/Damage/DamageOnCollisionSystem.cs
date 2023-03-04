@@ -51,6 +51,7 @@ public partial struct DamageOnCollisionSystem : ISystem
                         var health = Health.GetRefRW(entityA, false);
                         var damage = damageOnCollision.ValueRO.DamageToDealForMinForce;
                         health.ValueRW.Current -= damage;
+                        health.ValueRW.LastDamagerEntity = collisionEvent.EntityB;
                     }
                 }
                 if(entityB != Entity.Null)
@@ -61,6 +62,7 @@ public partial struct DamageOnCollisionSystem : ISystem
                         var health = Health.GetRefRW(entityB, false);
                         var damage = damageOnCollision.ValueRO.DamageToDealForMinForce;
                         health.ValueRW.Current -= damage;
+                        health.ValueRW.LastDamagerEntity = collisionEvent.EntityA;
                     }
                 }
             }
