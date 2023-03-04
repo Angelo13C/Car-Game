@@ -176,3 +176,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _requiredPointsToArrest: 7
+  _removedPointsOverSecond: 1

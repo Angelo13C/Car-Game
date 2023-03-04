@@ -15,10 +15,12 @@ public partial struct ArresterSystem : ISystem
         foreach(var (arrestable, arrestableTransform, arrestableEntity) in SystemAPI.Query<RefRW<Arrestable>, WorldTransform>().WithEntityAccess().WithNone<Arrested>())
         {
             var arrestablePosition = arrestableTransform.Position;
+            var arresting = false;
             foreach(var (arrester, arresterTransform) in SystemAPI.Query<Arrester, WorldTransform>())
             {
                 if(math.distancesq(arrestablePosition, arresterTransform.Position) <= arrester.ArrestRadiusSqr)
                 {
+                    arresting = true;
                     arrestable.ValueRW.CurrentPoints += deltaTime;
                     if(arrestable.ValueRO.CurrentPoints >= arrestable.ValueRO.RequiredPointsToArrest)
                     {
@@ -26,6 +28,12 @@ public partial struct ArresterSystem : ISystem
                         break;
                     }
                 }
+            }
+
+            if(!arresting)
+            {
+                var pointsToRemove = deltaTime * arrestable.ValueRO.RemovedPointsOverSecond;
+                arrestable.ValueRW.CurrentPoints = math.max(arrestable.ValueRO.CurrentPoints - pointsToRemove, 0);
             }
         }
 
