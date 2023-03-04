@@ -846,6 +846,10 @@ PrefabInstance:
       propertyPath: _initialSpeedToReach
       value: 40
       objectReference: {fileID: 0}
+    - target: {fileID: 149, guid: 422489e116feef54cb8ede7fe26a549b, type: 3}
+      propertyPath: _initialSpeedToReach
+      value: 60
+      objectReference: {fileID: 0}
     - target: {fileID: 1245710367105415895, guid: 422489e116feef54cb8ede7fe26a549b,
         type: 3}
       propertyPath: _tag
