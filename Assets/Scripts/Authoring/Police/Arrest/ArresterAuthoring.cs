@@ -16,4 +16,9 @@ public class ArresterAuthoring : MonoBehaviour
 			AddComponent(arrester);
 		}
 	}
+
+	private void OnDrawGizmos() {
+		Gizmos.color = Color.blue;
+		Gizmos.DrawWireSphere(transform.position, _arrestRadius);
+	}
 }
