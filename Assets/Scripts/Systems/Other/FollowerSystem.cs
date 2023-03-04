@@ -9,7 +9,7 @@ public partial struct FollowerSystem : ISystem
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        var transformLookup = SystemAPI.GetComponentLookup<WorldTransform>();
+        var transformLookup = SystemAPI.GetComponentLookup<WorldTransform>(true);
         foreach(var (follower, vehicleAISteer, cruiseControl, transform) in SystemAPI.Query<Follower, RefRW<VehicleAISteer>, RefRW<VehicleCruiseControl>, WorldTransform>())
         {
             if(follower.Target != Entity.Null)
