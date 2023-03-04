@@ -12,7 +12,7 @@ public partial struct CityVehiclesSpawnerSystem : ISystem
 
     public void OnCreate(ref SystemState state)
     {
-        _vehiclesQuery = state.GetEntityQuery(typeof(AIVehicleTag));
+        _vehiclesQuery = state.GetEntityQuery(typeof(CitizenVehicleTag));
     }
 
     [BurstCompile]

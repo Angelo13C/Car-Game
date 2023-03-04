@@ -62,7 +62,7 @@ VisualEffect:
       - m_Value: 16
         m_Name: Spawn Rate
         m_Overridden: 1
-      - m_Value: 12
+      - m_Value: 0
         m_Name: SpawnRate
         m_Overridden: 1
     m_Int:
@@ -138,7 +138,7 @@ PrefabInstance:
     - target: {fileID: 2391579585950865736, guid: b755001173cdf444ea62c203c6b67e18,
         type: 3}
       propertyPath: m_Name
-      value: AI Car
+      value: Citizen Car
       objectReference: {fileID: 0}
     - target: {fileID: 4039768735002980819, guid: b755001173cdf444ea62c203c6b67e18,
         type: 3}

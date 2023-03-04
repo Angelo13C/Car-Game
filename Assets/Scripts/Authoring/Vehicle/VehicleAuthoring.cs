@@ -3,12 +3,13 @@ using UnityEngine;
 
 public class VehicleAuthoring : MonoBehaviour
 {
-	[SerializeField] private Tag _tag;
+	[SerializeField] private VehicleTag _tag;
+	public VehicleTag Tag => _tag;
 
-	private enum Tag
+	public enum VehicleTag
 	{
 		Player,
-		AI,
+		Citizen,
 		Police
 	}
 
@@ -18,13 +19,13 @@ public class VehicleAuthoring : MonoBehaviour
 		{
 			switch(authoring._tag)
 			{
-				case Tag.Player:
+				case VehicleTag.Player:
 					AddComponent(new PlayerVehicleTag());
 					break;
-				case Tag.AI:
-					AddComponent(new AIVehicleTag());
+				case VehicleTag.Citizen:
+					AddComponent(new CitizenVehicleTag());
 					break;
-				case Tag.Police:
+				case VehicleTag.Police:
 					AddComponent(new PoliceVehicleTag());
 					break;
 			}			
