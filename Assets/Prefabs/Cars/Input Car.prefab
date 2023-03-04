@@ -93,6 +93,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 6570467869955376309}
+    - targetCorrespondingSourceObject: {fileID: 2391579585950865736, guid: b755001173cdf444ea62c203c6b67e18,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4645995624073403229}
   m_SourcePrefab: {fileID: 100100000, guid: b755001173cdf444ea62c203c6b67e18, type: 3}
 --- !u!1 &7661531889681997082 stripped
 GameObject:
@@ -159,3 +163,16 @@ MonoBehaviour:
   - RequiredCrimePoints: 30
   - RequiredCrimePoints: 100
   - RequiredCrimePoints: 200
+--- !u!114 &4645995624073403229
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7661531889681997082}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22da027505a713d4aa1e2f7324ccf824, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _requiredPointsToArrest: 7
