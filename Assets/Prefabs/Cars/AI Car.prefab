@@ -62,7 +62,7 @@ VisualEffect:
       - m_Value: 16
         m_Name: Spawn Rate
         m_Overridden: 1
-      - m_Value: 0
+      - m_Value: 12
         m_Name: SpawnRate
         m_Overridden: 1
     m_Int:
@@ -194,6 +194,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8928939342324287551, guid: b755001173cdf444ea62c203c6b67e18,
+        type: 3}
+      propertyPath: _tag
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
