@@ -911,6 +911,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8851468309529345636, guid: 422489e116feef54cb8ede7fe26a549b,
+        type: 3}
+      propertyPath: _maxHealth
+      value: 2000
+      objectReference: {fileID: 0}
     - target: {fileID: 9099474764526163671, guid: 422489e116feef54cb8ede7fe26a549b,
         type: 3}
       propertyPath: m_SphereRadius
