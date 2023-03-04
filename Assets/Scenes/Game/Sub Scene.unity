@@ -466,11 +466,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player car
       objectReference: {fileID: 0}
-    - target: {fileID: 7661531889681997082, guid: 313bf2ef305a9fa4eb38878adbb4ac21,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 8319140398747039105, guid: 313bf2ef305a9fa4eb38878adbb4ac21,
         type: 3}
       propertyPath: m_RootOrder
