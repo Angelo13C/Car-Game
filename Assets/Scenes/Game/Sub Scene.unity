@@ -1608,3 +1608,4 @@ MonoBehaviour:
   _vehiclesCount: 200
   _vehiclePrefab: {fileID: 5445072998384298912, guid: 422489e116feef54cb8ede7fe26a549b,
     type: 3}
+  _spawnZoneSize: {x: 40, y: 40}
