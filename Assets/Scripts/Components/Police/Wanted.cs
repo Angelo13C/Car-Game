@@ -6,12 +6,13 @@ public struct Wanted : IComponentData
 
 	public int CalculateCurrentStars(DynamicBuffer<WantedLevel> wantedLevels)
 	{
-		for(var i = 1; i < wantedLevels.Length; i++)
+		for(var i = wantedLevels.Length - 1; i >= 0; i--)
 		{
-			if(CurrentCrimePoints <= wantedLevels[i].RequiredCrimePoints)
+			if(CurrentCrimePoints >= wantedLevels[i].RequiredCrimePoints)
 				return i + 1;
 		}
-		return 1;
+		return -1;
+	}
 	}
 }
 
