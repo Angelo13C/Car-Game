@@ -159,10 +159,15 @@ MonoBehaviour:
   _initialStars: 1
   _wantedLevels:
   - RequiredCrimePoints: 0
+    MinPoliceCars: 5
   - RequiredCrimePoints: 10
+    MinPoliceCars: 6
   - RequiredCrimePoints: 30
+    MinPoliceCars: 7
   - RequiredCrimePoints: 100
+    MinPoliceCars: 8
   - RequiredCrimePoints: 200
+    MinPoliceCars: 10
 --- !u!114 &4645995624073403229
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -13,6 +13,10 @@ public struct Wanted : IComponentData
 		}
 		return -1;
 	}
+
+	public void GetCurrentWantedLevel(DynamicBuffer<WantedLevel> wantedLevels, out WantedLevel currentWantedLevel)
+	{
+		currentWantedLevel = wantedLevels[CalculateCurrentStars(wantedLevels) - 1];
 	}
 }
 
@@ -21,4 +25,6 @@ public struct Wanted : IComponentData
 public struct WantedLevel : IBufferElementData
 {
 	public int RequiredCrimePoints;
+
+	public int MinPoliceCars;
 }

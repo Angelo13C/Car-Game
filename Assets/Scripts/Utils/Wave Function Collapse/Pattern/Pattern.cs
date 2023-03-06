@@ -147,6 +147,14 @@ public static class DirectionExtensions
             default: return math.PI;
         }
     }
+
+    [BurstCompile]
+    public static Direction FromAngle(float angle)
+    {
+        if(angle < 0)
+            angle += 2 * math.PI;
+        return (Direction) math.round(angle / (math.PI / 2f));
+    }
 }
 
 [BurstCompile]
