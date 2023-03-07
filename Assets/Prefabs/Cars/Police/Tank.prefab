@@ -46,6 +46,8 @@ GameObject:
   - component: {fileID: 6205394020137473754}
   - component: {fileID: 6159867069368323764}
   - component: {fileID: 9061979917183835034}
+  - component: {fileID: 4420702470311626419}
+  - component: {fileID: 8374007391248815708}
   m_Layer: 0
   m_Name: gun
   m_TagString: Untagged
@@ -406,6 +408,105 @@ MonoBehaviour:
         Tag07: 0
     m_SerializedVersion: 1
   m_SerializedVersion: 1
+--- !u!114 &4420702470311626419
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5556598116054939407}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ccea9ea98e38942e0b0938c27ed1903e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_MotionType: 0
+  m_Smoothing: 0
+  m_Mass: 100
+  m_LinearDamping: 1
+  m_AngularDamping: 50
+  m_InitialLinearVelocity:
+    x: 0
+    y: 0
+    z: 0
+  m_InitialAngularVelocity:
+    x: 0
+    y: 0
+    z: 0
+  m_GravityFactor: 1
+  m_OverrideDefaultMassDistribution: 0
+  m_CenterOfMass:
+    x: 0
+    y: 0
+    z: 0
+  m_Orientation:
+    Value:
+      x: 0
+      y: 0
+      z: 0
+    RotationOrder: 4
+  m_InertiaTensor:
+    x: 0.4
+    y: 0.4
+    z: 0.4
+  m_WorldIndex: 0
+  m_CustomTags:
+    Tag00: 0
+    Tag01: 0
+    Tag02: 0
+    Tag03: 0
+    Tag04: 0
+    Tag05: 0
+    Tag06: 0
+    Tag07: 0
+--- !u!114 &8374007391248815708
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5556598116054939407}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbaf9813ee7af2f41a5fd776598ab5b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConnectedBody: {fileID: 3847966576392703963}
+  EnableCollision: 0
+  MaxImpulse:
+    x: Infinity
+    y: Infinity
+    z: Infinity
+  EditPivots: 0
+  AutoSetConnected: 0
+  PositionLocal:
+    x: 0
+    y: -0.35
+    z: -1
+  PositionInConnectedEntity:
+    x: 0
+    y: 1.5
+    z: 0
+  EditAxes: 1
+  HingeAxisLocal:
+    x: 0
+    y: 1
+    z: 0
+  HingeAxisInConnectedEntity:
+    x: 0
+    y: 1
+    z: 0
+  EditLimits: 1
+  PerpendicularAxisLocal:
+    x: -1
+    y: 0
+    z: 0
+  PerpendicularAxisInConnectedEntity:
+    x: -1
+    y: 0
+    z: 0
+  MinAngle: -30
+  MaxAngle: 30
 --- !u!1 &7020963148901371163
 GameObject:
   m_ObjectHideFlags: 0
@@ -953,6 +1054,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 1993966070090822307, guid: f630e6a59df41cc40b2e45d4b61f9a93, type: 3}
+    - {fileID: 2083631385597762488, guid: f630e6a59df41cc40b2e45d4b61f9a93, type: 3}
     m_RemovedGameObjects:
     - {fileID: 6622193360235879455, guid: f630e6a59df41cc40b2e45d4b61f9a93, type: 3}
     - {fileID: 3428718456664848524, guid: f630e6a59df41cc40b2e45d4b61f9a93, type: 3}
@@ -1053,6 +1155,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 2698074065246044579}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &3847966576392703963 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1159612202544123512, guid: f630e6a59df41cc40b2e45d4b61f9a93,
+    type: 3}
+  m_PrefabInstance: {fileID: 2698074065246044579}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ccea9ea98e38942e0b0938c27ed1903e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &4900946978964263317 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7021909371355336758, guid: f630e6a59df41cc40b2e45d4b61f9a93,
