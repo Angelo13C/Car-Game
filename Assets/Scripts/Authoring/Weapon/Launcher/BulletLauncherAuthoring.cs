@@ -5,6 +5,7 @@ public class BulletLauncherAuthoring : MonoBehaviour
 {
     [SerializeField] private GameObject _firePoint;
     [SerializeField] private GameObject _bulletPrefab;
+	[SerializeField] [Range(1, 100)] private float _launchSpeed = 20;
 
 	class Baker : Baker<BulletLauncherAuthoring>
 	{
@@ -12,7 +13,8 @@ public class BulletLauncherAuthoring : MonoBehaviour
 		{
 			var bulletLauncher = new BulletLauncher {
 				FirePoint = GetEntity(authoring._firePoint),
-				BulletPrefab = GetEntity(authoring._bulletPrefab)
+				BulletPrefab = GetEntity(authoring._bulletPrefab),
+				LaunchSpeed = authoring._launchSpeed
 			};
 
 			AddComponent(bulletLauncher);
