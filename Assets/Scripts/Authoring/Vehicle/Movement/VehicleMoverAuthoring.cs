@@ -5,8 +5,8 @@ using UnityEngine;
 public class VehicleMoverAuthoring : MonoBehaviour
 {
     [Header("Force")]
-    [SerializeField] [Range(10000, 500000)] private float _gasForce;
-    [SerializeField] [Range(10000, 500000)] private float _brakeForce;
+    [SerializeField] [Min(0)] private float _gasForce = 30000;
+    [SerializeField] [Min(0)] private float _brakeForce = 15000;
     
     [Header("Offset")]
     [SerializeField] private Vector3 _centerOfMassOffset;

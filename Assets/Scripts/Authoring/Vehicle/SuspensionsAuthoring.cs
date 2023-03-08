@@ -8,8 +8,8 @@ public class SuspensionsAuthoring : MonoBehaviour
 {
     [SerializeField] private Vector3 _suspensionsOffset;
 
-    [SerializeField] [Range(0, 1)] private float _suspensionHeight;
-    [SerializeField] [Range(500, 50000)] private float _suspensionForce;
+    [SerializeField] [Min(0)] private float _suspensionHeight;
+    [SerializeField] [Min(0)] private float _suspensionForce = 10000;
 
 	[SerializeField] private PhysicsCategoryTags _collisionFilter;
 
