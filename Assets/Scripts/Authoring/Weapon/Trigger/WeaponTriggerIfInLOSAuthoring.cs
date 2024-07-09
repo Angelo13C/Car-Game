@@ -20,7 +20,7 @@ public class WeaponTriggerIfInLOSAuthoring : MonoBehaviour
 				MaxDistance = authoring._maxDistance,
 				MaxAngle = math.radians(authoring._maxAngle),
 				Filter = new CollisionFilter {
-                    BelongsTo = authoring.GetComponent<PhysicsShapeAuthoring>().BelongsTo.Value,
+                    BelongsTo = authoring.GetComponentInChildren<PhysicsShapeAuthoring>().BelongsTo.Value,
                     CollidesWith = authoring._collisionFilter.Value,
                     GroupIndex = 0,
                 }
